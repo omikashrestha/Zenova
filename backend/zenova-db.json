@@ -1,0 +1,175 @@
+{
+  "users": [
+    {
+      "id": "ab0d0bfa-d85b-4777-8db6-846c1bee63cb",
+      "name": "Raghav Sharma",
+      "email": "raghav@gmail.com",
+      "password": "$2a$10$GsIaOgEAFWiJWVyCMPV/fOe/9AVTyL57x0sMPp88dnKE1QMPYXLwO",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-24T08:29:24.008Z",
+      "ageGroup": "18–25",
+      "occupation": "Student"
+    },
+    {
+      "id": "45f6fc04-d1d8-4a75-8159-e657e0974953",
+      "name": "Asmita Adhikari",
+      "email": "asmita@gmail.com",
+      "password": "$2a$10$rXvcpVBzPmglapiz1gEs6eca5C3DEaURMQpNgPMzk7WebYENocj2q",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-24T10:08:22.389Z",
+      "ageGroup": "26–35",
+      "occupation": "Working Professional"
+    },
+    {
+      "id": "ce1222f9-b5b0-43c6-af1e-7601482ee66a",
+      "name": "Ron Adhikari",
+      "email": "ron@gmail.com",
+      "password": "$2a$10$va9n86BKQenqH.bNxKQKs.m.0GFuBVrzivzeiiv8N16qI9ZPKxvKi",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-24T13:01:20.456Z",
+      "ageGroup": "18–25",
+      "occupation": "Working Professional"
+    },
+    {
+      "id": "737ee561-0ac2-4711-989a-dba9c5bc7a3e",
+      "name": "Eccha Bansal",
+      "email": "eccha@gmail.com",
+      "password": "$2a$10$AtgVW69jTV6vgQKrgUD/3.6K0OfL4J7AZsrt8T6xvBzEZfEDu4ZbO",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-24T13:29:28.710Z",
+      "ageGroup": "18–25",
+      "occupation": "Student"
+    }
+  ],
+  "checkins": [
+    {
+      "id": "f4fce8ad-d596-4b26-a831-5ef8e94d9520",
+      "userId": "ab0d0bfa-d85b-4777-8db6-846c1bee63cb",
+      "date": "2026-04-24",
+      "mood": "Good",
+      "createdAt": "2026-04-24T08:29:40.570Z",
+      "updatedAt": "2026-04-24T12:51:33.505Z"
+    },
+    {
+      "id": "ab3f1d7c-5072-4123-b506-91d4cad3fba1",
+      "userId": "45f6fc04-d1d8-4a75-8159-e657e0974953",
+      "date": "2026-04-24",
+      "mood": "Good",
+      "createdAt": "2026-04-24T10:08:39.003Z",
+      "updatedAt": "2026-04-24T10:13:33.404Z"
+    },
+    {
+      "id": "567eef7f-8f7e-49b5-8dda-2cace454f997",
+      "userId": "ce1222f9-b5b0-43c6-af1e-7601482ee66a",
+      "date": "2026-04-24",
+      "mood": "Stressed",
+      "createdAt": "2026-04-24T13:13:21.843Z",
+      "updatedAt": "2026-04-24T13:27:05.686Z"
+    },
+    {
+      "id": "a84553dd-7e40-4dda-842b-6353d2569129",
+      "userId": "737ee561-0ac2-4711-989a-dba9c5bc7a3e",
+      "date": "2026-04-24",
+      "mood": "Stressed",
+      "createdAt": "2026-04-24T13:33:45.555Z",
+      "updatedAt": "2026-04-24T13:34:24.183Z"
+    }
+  ],
+  "physical": [
+    {
+      "id": "0f17ed07-9955-4548-8644-f617a4b964e6",
+      "userId": "ab0d0bfa-d85b-4777-8db6-846c1bee63cb",
+      "date": "2026-04-24",
+      "sleepScore": 4,
+      "createdAt": "2026-04-24T08:29:55.719Z",
+      "updatedAt": "2026-04-24T10:41:03.828Z",
+      "hydration": 8,
+      "movement": "A little",
+      "bodyEnergy": "Light",
+      "sleepHours": 5,
+      "refreshed": "Somewhat",
+      "sleepIssue": "Phone use",
+      "fatigueCause": "Workload",
+      "hydrationSign": "Low energy"
+    },
+    {
+      "id": "fdf43ad3-1ca7-4cd0-8ed8-9f0fdde1941a",
+      "userId": "45f6fc04-d1d8-4a75-8159-e657e0974953",
+      "date": "2026-04-24",
+      "sleepScore": 4,
+      "createdAt": "2026-04-24T10:08:49.019Z",
+      "updatedAt": "2026-04-24T10:13:16.955Z",
+      "hydration": 7,
+      "movement": "Yes",
+      "bodyEnergy": "Light"
+    }
+  ],
+  "mental": [
+    {
+      "id": "76f2a97b-0c9d-400d-a416-3efc419720d4",
+      "userId": "ab0d0bfa-d85b-4777-8db6-846c1bee63cb",
+      "date": "2026-04-24",
+      "focus": 2,
+      "createdAt": "2026-04-24T08:30:14.315Z",
+      "updatedAt": "2026-04-24T10:42:37.024Z",
+      "cognitiveLoad": "Calm",
+      "digitalFatigue": "Heavy",
+      "worryText": "assignments",
+      "worryEmotion": "Anxious",
+      "worryIntensity": 8,
+      "mindfulnessGoal": "Anxiety relief",
+      "stressLevel": 4
+    },
+    {
+      "id": "5cc5d2f9-9af3-47c8-b58d-c517b897871b",
+      "userId": "45f6fc04-d1d8-4a75-8159-e657e0974953",
+      "date": "2026-04-24",
+      "focus": 4,
+      "createdAt": "2026-04-24T10:09:05.102Z",
+      "updatedAt": "2026-04-24T10:13:29.598Z",
+      "cognitiveLoad": "Manageable",
+      "digitalFatigue": "Fine",
+      "worryText": "nothing!"
+    }
+  ],
+  "emotional": [
+    {
+      "id": "00a7d937-e7ad-461c-b685-1442572b92f3",
+      "userId": "ab0d0bfa-d85b-4777-8db6-846c1bee63cb",
+      "date": "2026-04-24",
+      "mood": "Good",
+      "createdAt": "2026-04-24T08:29:40.570Z",
+      "updatedAt": "2026-04-24T12:51:33.505Z",
+      "gratitude": true,
+      "socialConnection": "Not today",
+      "energyEmotion": "Calm"
+    },
+    {
+      "id": "8c4996e8-bc36-480c-a408-fb49c52cee3d",
+      "userId": "45f6fc04-d1d8-4a75-8159-e657e0974953",
+      "date": "2026-04-24",
+      "mood": "Good",
+      "createdAt": "2026-04-24T10:08:39.003Z",
+      "updatedAt": "2026-04-24T10:13:37.637Z",
+      "socialConnection": "Brief",
+      "energyEmotion": "Calm",
+      "gratitude": true
+    },
+    {
+      "id": "b1e14e2b-95b4-425c-b970-a193e1c59c68",
+      "userId": "ce1222f9-b5b0-43c6-af1e-7601482ee66a",
+      "date": "2026-04-24",
+      "mood": "Stressed",
+      "createdAt": "2026-04-24T13:13:21.843Z",
+      "updatedAt": "2026-04-24T13:27:05.686Z"
+    },
+    {
+      "id": "9a3091a1-9cd4-499d-9774-792a42dfa2a2",
+      "userId": "737ee561-0ac2-4711-989a-dba9c5bc7a3e",
+      "date": "2026-04-24",
+      "mood": "Stressed",
+      "createdAt": "2026-04-24T13:33:45.555Z",
+      "updatedAt": "2026-04-24T13:34:24.183Z"
+    }
+  ]
+}

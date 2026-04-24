@@ -1,0 +1,39 @@
+<svg width="100%" viewBox="0 0 690 310" role="img" style="" xmlns="http://www.w3.org/2000/svg">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Zenova logo</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Zenova wellness platform logo featuring an abstract leaf-circle monogram and wordmark in sage green and soft lavender</desc>
+
+  
+
+  <rect x="0" y="0" width="680" height="300" fill="#F7F5F0" rx="16" style="fill:rgb(26, 31, 30);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <g transform="translate(130, 150)" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
+
+    <!-- Mark: overlapping circle + leaf shape -->
+    <!-- Outer soft ring -->
+    <circle cx="0" cy="0" r="58" fill="#E8EDE6" stroke="#A8C5A0" stroke-width="1.5" style="fill:rgb(232, 237, 230);stroke:rgb(168, 197, 160);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <!-- Inner leaf / petal form — right -->
+    <path d="M0,-36 C28,-36 42,-12 42,0 C42,12 28,36 0,36 C12,18 18,8 18,0 C18,-8 12,-18 0,-36 Z" fill="#6B9E78" opacity="0.85" style="fill:rgb(107, 158, 120);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.85;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <!-- Inner leaf / petal form — left -->
+    <path d="M0,-36 C-28,-36 -42,-12 -42,0 C-42,12 -28,36 0,36 C-12,18 -18,8 -18,0 C-18,-8 -12,-18 0,-36 Z" fill="#9B8FCA" opacity="0.7" style="fill:rgb(155, 143, 202);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <!-- Center overlap accent dot -->
+    <circle cx="0" cy="0" r="7" fill="#F7F5F0" style="fill:rgb(247, 245, 240);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <circle cx="0" cy="0" r="4" fill="#6B9E78" style="fill:rgb(107, 158, 120);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <!-- Small petal top accent -->
+    <ellipse cx="0" cy="-46" rx="5" ry="8" fill="#6B9E78" opacity="0.5" style="fill:rgb(107, 158, 120);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  </g>
+
+  <!-- Wordmark -->
+  <text x="210" y="136" font-size="64" font-weight="400" fill="#2D4A35" font-family="'DM Serif Display', Georgia, serif" letter-spacing="-1" style="fill:rgb(45, 74, 53);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;DM Serif Display&quot;, Georgia, serif;font-size:64px;font-weight:400;text-anchor:start;dominant-baseline:auto">Zenova</text>
+
+  <!-- Tagline -->
+  <text x="213" y="168" font-size="15" font-weight="300" fill="#7A9B82" font-family="'DM Sans', sans-serif" letter-spacing="3.5" style="fill:rgb(122, 155, 130);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;DM Sans&quot;, sans-serif;font-size:15px;font-weight:300;text-anchor:start;dominant-baseline:auto">WELLNESS · SIMPLIFIED</text>
+
+  <!-- Thin separator rule under tagline -->
+  <line x1="213" y1="180" x2="540" y2="180" stroke="#C4D4C0" stroke-width="0.8" style="fill:rgb(0, 0, 0);stroke:rgb(196, 212, 192);color:rgb(255, 255, 255);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+</svg>
