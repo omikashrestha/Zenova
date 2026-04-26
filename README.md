@@ -1,72 +1,116 @@
-# Zenova — Emotion-Driven Holistic Wellness Platform
+# Zenova - Action-Based Wellness Platform (v2)
 
-A demo-ready full-stack web app implementing the 155-point Zenova walkthrough: splash intro, landing page, auth, onboarding, dashboard tabs, wellness weather, recovery mode, weekly reflection, physical/mental/emotional tracking, unified wellness score, profile, protected routes, and JWT-secured API.
+Zenova is a full-stack wellness platform that helps users take small daily actions across physical, mental, emotional, and recovery health.  
+The current release uses an action-module experience instead of a traditional dashboard-tab layout.
+
+## Live Deployment
+
+- Frontend (Vercel): your production Vercel URL
+- Backend (Render): https://zenova-backend.onrender.com
+
+## Release
+
+- Current production tag: `v2.0.0-action-modules-live`
+- Branch merged to production: `main`
 
 ## Tech Stack
+
 - Frontend: React + Vite
 - Backend: Node.js + Express
-- Database: Local JSON file persistence for easy demo setup
-- Auth: JWT + bcrypt
+- Icons: Lucide React
+- Storage: JSON persistence (`backend/zenova-db.json`)
+- Authentication: JWT + bcrypt
+- Deploy: Vercel (frontend), Render (backend)
 
-## How to Run
+## Core Product Flow (v2)
 
-1. Install dependencies.
+1. Landing + auth modal (signup/login)
+2. Onboarding (age group, occupation)
+3. Today's Focus home with module cards
+4. Action modules:
+   - Physical Activity
+   - Hydration
+   - Sleep
+   - Calm & Reset
+   - Mind & Emotions
+5. Profile module with activity summary and preferences
+
+## UX and Design Rules
+
+- No emojis in interface actions; Lucide icons are used throughout modules
+- Card-based layout with minimal copy
+- Color system:
+  - Green `#6B9E78` for physical health
+  - Lavender `#9B8FCA` for mental and emotional state
+  - Blue `#AACFE0` for hydration and sleep context
+  - Peach `#E8CBBA` for warning and recovery accents
+- Typography:
+  - Headings: DM Serif Display
+  - Body: DM Sans
+- Base background tone: ivory (`#F7F5F0`)
+- Zenova logo click routes users to:
+  - `/dashboard` when logged in
+  - `/` when logged out
+
+## Local Development
+
+### 1) Install dependencies
 
 ```bash
-cd Zenova
 npm install
 npm run install-all
 ```
 
-2. Create backend environment file.
+### 2) Configure backend environment
 
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-3. Start both frontend and backend.
+### 3) Run app
 
 ```bash
 npm run dev
 ```
 
-4. Open the frontend.
+This starts frontend and backend together from the root workspace.
 
-```text
-http://localhost:5173
-```
+### 4) Local URLs
 
-Backend runs on:
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:5003/api`
 
-```text
-http://localhost:5001
-```
+Frontend API base is configured via:
 
-## Demo Walkthrough
-1. Landing page and splash intro.
-2. Explore Features panel and tooltips.
-3. Join us → Signup.
-4. Onboarding age/occupation.
-5. Dashboard Overview → Daily check-in.
-6. Show Wellness Weather, Recommendation, Recovery Mode after three stressed entries.
-7. Physical/Mental/Emotional tabs.
-8. Unified Wellness Score and cross-domain insights.
-9. Profile page and check-in history.
-10. Logout and protected route behavior.
+- `VITE_API_URL` (recommended in production), or
+- fallback `http://localhost:5003/api`
 
-## API Endpoints
-- POST /api/auth/signup
-- POST /api/auth/login
-- GET /api/user/profile
-- PUT /api/user/onboarding
-- POST /api/checkin
-- GET /api/checkin/history
-- GET /api/insights/weekly
-- POST /api/physical
-- POST /api/mental
-- POST /api/emotional
+## Key Frontend Entry Points
+
+- `frontend/src/main.jsx` - routing, auth flow, home module hub
+- `frontend/src/modules/` - module implementations
+- `frontend/src/PageWrapper.jsx` - shared module wrapper
+
+## Key Backend Entry Point
+
+- `backend/server.js` - API bootstrap and route mounts
+
+## API Surface (high level)
+
+- Auth: `/api/auth/*`
+- User: `/api/user/*`
+- Check-ins: `/api/checkin/*`
+- Insights: `/api/insights/*`
+- Coach/Module persistence: `/api/coach/*`
+- Mind and journaling routes: `/api/*` (from `mindRoutes`)
+- Legacy compatibility:
+  - `POST /api/physical`
+  - `POST /api/mental`
+  - `POST /api/emotional`
+  - `POST /api/sleep`
+  - `POST /api/calm`
 
 ## Notes
-- The app uses the supplied `zenova_logo.svg` in the navbar and splash flow.
-- The palette follows the strict Zenova color system: Ivory, Sage, Forest, Lavender, Sky, Peach, and Dew.
-- Recommendations and insights are rule-based, deterministic, and demo-safe.
+
+- The backend on Render free tier may cold start after inactivity.
+- Large static media should be monitored for repository size impact and may be moved to CDN or object storage in future iterations.
