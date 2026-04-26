@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { apiRequest as request } from '../api';
 import { Moon, AlarmClock, Clock, AlertCircle, ShieldCheck, BatteryLow, CalendarClock, Lamp, PhoneOff, Coffee, Sunrise, BedDouble, Sparkles, AudioWaveform, CloudRain, Music, Wind, ScanLine, Brain, Play, Pause, CalendarDays, LayoutList, Download, CheckCircle2, Timer, ChevronLeft, Volume2, Settings } from 'lucide-react';
-
+import PageWrapper from '../PageWrapper';
 const AUDIO_TRACKS = [
-  { id: 'white_noise', title: 'White Noise', url: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_22b467ecda.mp3', icon: <AudioWaveform size={32} color="#AACFE0" /> },
-  { id: 'rain', title: 'Rain Sounds', url: 'https://cdn.pixabay.com/download/audio/2021/08/09/audio_94639bb09e.mp3', icon: <CloudRain size={32} color="#AACFE0" /> },
-  { id: 'ambient', title: 'Calm Ambient', url: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3', icon: <Music size={32} color="#9B8FCA" /> }
+  { id: 'white_noise', title: 'White Noise', url: '/audio/white-noise.mp3', icon: <AudioWaveform size={32} color="#AACFE0" /> },
+  { id: 'rain', title: 'Rain Sounds', url: '/audio/rain.mp3', icon: <CloudRain size={32} color="#AACFE0" /> },
+  { id: 'ambient', title: 'Calm Ambient', url: '/audio/ambient.mp3', icon: <Music size={32} color="#9B8FCA" /> }
 ];
 
 const MAINTENANCE_CARDS = [
@@ -73,13 +73,21 @@ export default function SleepModule({ back }) {
     await request('/coach/sleep', { method: 'POST', body: JSON.stringify(updated) });
   };
 
-  if (loading) return <div className="card center" style={{marginTop:'2rem'}}><p>Loading Sleep Data...</p></div>;
+  if (loading) return (
+    <PageWrapper>
+      <div className="card center" style={{marginTop:'2rem'}}><p>Loading Sleep Data...</p></div>
+    </PageWrapper>
+  );
 
-  if (!data.sleepTime || !data.wakeTime || !data.difficultyAsleep) {
-    return <SetupScreen data={data} save={save} />;
-  }
-
-  return <SleepDashboard data={data} save={save} back={back} />;
+  return (
+    <PageWrapper>
+      {(!data.sleepTime || !data.wakeTime || !data.difficultyAsleep) ? (
+        <SetupScreen data={data} save={save} />
+      ) : (
+        <SleepDashboard data={data} save={save} back={back} />
+      )}
+    </PageWrapper>
+  );
 }
 
 function SetupScreen({ data, save }) {
@@ -228,26 +236,26 @@ function SleepDashboard({ data, save, back }) {
 
 function RoutineGenerator({ data, save, back, onPrint }) {
   const [routine, setRoutine] = useState(data.routine || {
-    morning: '', midday: '', afternoon: '', evening: '', night: '', late: ''
+    '5–8 AM': '', '9–11 AM': '', '12–2 PM': '', '3–6 PM': '', '7–9 PM': '', '10–12 AM': '', '12–5 AM': ''
   });
 
   const acts = {
-    morning: ['Wake up', 'Exercise', 'Breakfast', 'Work/Study'],
-    midday: ['Lunch', 'Work/Study', 'Short Walk'],
-    afternoon: ['Work/Study', 'Coffee Break', 'Nap'],
-    evening: ['Dinner', 'Screen Time', 'Socialize', 'Exercise'],
-    night: ['Screen Time', 'Wind-down', 'Reading', 'Sleep'],
-    late: ['Sleep', 'Screen Time', 'Working']
+    '5–8 AM': ['Wake up', 'Exercise', 'Breakfast', 'Light Reading'],
+    '9–11 AM': ['Work/Study', 'Deep Work', 'Meeting'],
+    '12–2 PM': ['Lunch', 'Short Walk', 'Rest'],
+    '3–6 PM': ['Work/Study', 'Coffee/Tea Break', 'Errands'],
+    '7–9 PM': ['Dinner', 'Socializing', 'Family Time', 'Relaxing'],
+    '10–12 AM': ['Wind-down', 'Reading', 'Light Stretching', 'Screen Time'],
+    '12–5 AM': ['Sleep', 'Late Night Work', 'Screen Time']
   };
 
   const submit = () => {
-    // Generate an optimized version (only touches sleep related bad habits)
     const optimized = { ...routine };
-    if (optimized.late === 'Screen Time' || optimized.late === 'Working') {
-      optimized.late = 'Sleep (Adjusted)';
+    if (optimized['12–5 AM'] === 'Late Night Work' || optimized['12–5 AM'] === 'Screen Time') {
+      optimized['12–5 AM'] = 'Rest / Early Sleep (Gradual)';
     }
-    if (optimized.night === 'Screen Time') {
-      optimized.night = 'Wind-down (Adjusted)';
+    if (optimized['10–12 AM'] === 'Screen Time') {
+      optimized['10–12 AM'] = 'Wind-down / Reading (Optimized)';
     }
     save({ routine: optimized });
     setRoutine(optimized);
@@ -259,12 +267,12 @@ function RoutineGenerator({ data, save, back, onPrint }) {
       
       <div className="card no-print" style={{ marginBottom:'2rem' }}>
         <h2>Personalized Routine Generator</h2>
-        <p style={{color:'var(--muted)', marginBottom:'1.5rem'}}>Select your typical activities. The system will analyze and only adjust sleep-disrupting behaviors.</p>
+        <p style={{color:'var(--muted)', marginBottom:'1.5rem'}}>Select your typical activities for each time block. We only optimize sleep-disrupting habits.</p>
         
         <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap:'1rem', marginBottom:'2rem' }}>
           {Object.keys(acts).map(block => (
             <div key={block}>
-              <label style={{display:'block', marginBottom:'0.25rem', fontWeight:'bold', textTransform:'capitalize'}}>{block}</label>
+              <label style={{display:'block', marginBottom:'0.25rem', fontWeight:'bold'}}>{block}</label>
               <select value={routine[block]} onChange={e => setRoutine({...routine, [block]: e.target.value})} style={{width:'100%', padding:'0.75rem', borderRadius:'8px', border:'1px solid #ccc'}}>
                 <option value="">Select activity...</option>
                 {acts[block].map(a => <option key={a} value={a}>{a}</option>)}
@@ -285,14 +293,14 @@ function RoutineGenerator({ data, save, back, onPrint }) {
         <div style={{ position:'relative', borderLeft:'4px solid var(--dew)', marginLeft:'20px', paddingLeft:'30px', display:'flex', flexDirection:'column', gap:'2rem' }}>
           {Object.keys(acts).map((block, idx) => {
             const val = routine[block] || 'No activity set';
-            const isAdjusted = val.includes('(Adjusted)');
+            const isAdjusted = val.includes('(Gradual)') || val.includes('(Optimized)');
             return (
               <div key={block} style={{ position:'relative' }}>
                 <div style={{ position:'absolute', left:'-42px', top:'0', width:'20px', height:'20px', borderRadius:'50%', background: isAdjusted ? 'var(--peach)' : 'var(--sage)' }}></div>
                 <h4 style={{ margin:'0 0 0.25rem', textTransform:'uppercase', color:'var(--muted)', fontSize:'0.85rem' }}>{block}</h4>
                 <div style={{ display:'flex', alignItems:'center', gap:'0.75rem', padding:'1rem', background: isAdjusted ? '#FFF5F5' : 'var(--ivory)', borderRadius:'12px', border: isAdjusted ? '1px solid var(--peach)' : '1px solid #eee' }}>
                   <b style={{ fontSize:'1.1rem', color: isAdjusted ? 'var(--peach)' : 'var(--forest)' }}>{val}</b>
-                  {isAdjusted && <span style={{ fontSize:'0.8rem', background:'var(--peach)', color:'white', padding:'0.15rem 0.5rem', borderRadius:'999px' }}>Auto-Corrected</span>}
+                  {isAdjusted && <span style={{ fontSize:'0.8rem', background:'var(--peach)', color:'white', padding:'0.15rem 0.5rem', borderRadius:'999px' }}>Optimized</span>}
                 </div>
               </div>
             );
@@ -314,38 +322,96 @@ function RoutineGenerator({ data, save, back, onPrint }) {
 
 function AudioHub({ back }) {
   const [playing, setPlaying] = useState(null);
-  const [timer, setTimer] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(0); 
+  const audioRef = React.useRef(null);
+
+  useEffect(() => {
+    let interval;
+    if (playing && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            setPlaying(null);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [playing, timeLeft]);
 
   const toggle = (id) => {
-    if (playing === id) setPlaying(null);
-    else setPlaying(id);
+    if (playing === id) {
+      setPlaying(null);
+    } else {
+      setPlaying(id);
+      if (timeLeft === 0) setTimeLeft(20 * 60);
+    }
+  };
+
+  const formatTimer = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <button className="ghost" onClick={back} style={{ marginBottom: '1rem' }}><ChevronLeft size={16}/> Back</button>
-      <h2 style={{ marginBottom:'2rem' }}>Sleep Assistance Hub</h2>
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h2 style={{ margin: 0 }}>Sleep Assistance Hub</h2>
+        {playing && (
+          <div style={{ background: 'var(--dew)', padding: '0.5rem 1rem', borderRadius: '999px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Timer size={16} /> Stops in: {formatTimer(timeLeft)}
+          </div>
+        )}
+      </div>
       
       <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
         {AUDIO_TRACKS.map(track => {
           const isPlaying = playing === track.id;
           return (
-            <div key={track.id} className="card" style={{ textAlign:'center', padding:'2rem 1rem' }}>
+            <div key={track.id} className="card" style={{ 
+              textAlign:'center', 
+              padding:'2rem 1rem', 
+              border: isPlaying ? '2px solid var(--sage)' : '2px solid transparent',
+              transition: 'border-color 0.3s'
+            }}>
               <div style={{ marginBottom:'1rem' }}>{track.icon}</div>
               <h3 style={{ margin:'0 0 1rem' }}>{track.title}</h3>
               
-              <div style={{ display:'flex', justifyContent:'center', gap:'0.5rem', marginBottom:'1rem' }}>
-                <button className={timer === 10 ? 'primary' : 'ghost'} onClick={()=>setTimer(10)} style={{padding:'0.25rem 0.5rem', fontSize:'0.8rem', display:'flex', alignItems:'center', gap:'0.25rem'}}><Timer size={16} color="#7A9B82" /> 10m</button>
-                <button className={timer === 20 ? 'primary' : 'ghost'} onClick={()=>setTimer(20)} style={{padding:'0.25rem 0.5rem', fontSize:'0.8rem'}}>20m</button>
-                <button className={timer === 30 ? 'primary' : 'ghost'} onClick={()=>setTimer(30)} style={{padding:'0.25rem 0.5rem', fontSize:'0.8rem'}}>30m</button>
+              <div style={{ display:'flex', justifyContent:'center', gap:'0.5rem', marginBottom:'1.5rem' }}>
+                {[10, 20, 30].map(mins => (
+                  <button 
+                    key={mins}
+                    className={timeLeft === mins * 60 ? 'primary' : 'ghost'} 
+                    onClick={() => setTimeLeft(mins * 60)} 
+                    style={{ padding:'0.25rem 0.5rem', fontSize:'0.8rem' }}
+                  >
+                    {mins}m
+                  </button>
+                ))}
               </div>
 
-              <button className={isPlaying ? 'ghost' : 'primary'} onClick={() => toggle(track.id)} style={{ width:'60px', height:'60px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto' }}>
-                {isPlaying ? <Pause size={18} color={isPlaying ? '#2D4A35' : '#ffffff'} /> : <Play size={18} color="#ffffff" />}
+              <button 
+                className={isPlaying ? 'ghost' : 'primary'} 
+                onClick={() => toggle(track.id)} 
+                style={{ width:'64px', height:'64px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto', boxShadow: isPlaying ? 'none' : '0 4px 12px rgba(0,0,0,0.1)' }}
+              >
+                {isPlaying ? <Pause size={24} color="var(--forest)" /> : <Play size={24} color="#ffffff" style={{ marginLeft: '4px' }} />}
               </button>
               
-              {/* Functional Audio Player (Hidden UI) */}
-              {isPlaying && <audio src={track.url} autoPlay loop />}
+              {isPlaying && (
+                <audio 
+                  src={track.url} 
+                  autoPlay 
+                  loop 
+                  ref={audioRef}
+                  onPlay={() => { if (audioRef.current) audioRef.current.volume = track.id === 'ambient' ? 0.3 : 0.5; }}
+                />
+              )}
             </div>
           );
         })}

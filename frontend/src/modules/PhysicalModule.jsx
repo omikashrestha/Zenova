@@ -3,7 +3,7 @@ import { apiRequest as request } from '../api';
 import { Dumbbell, Footprints, PersonStanding, Armchair, Zap, Timer, AlarmClock, Scale, Ruler, ChevronsDown, Leaf, Move, MoveUp, CheckCircle2, PlayCircle, ChevronLeft, ArrowRight, Check } from 'lucide-react';
 
 // --- DATA LOGIC ---
-
+import PageWrapper from '../PageWrapper';
 const routines = {
   underweight: [
     { name: 'Squats', reps: '10–12 reps × 3 sets', time: null, type: 'strength' },
@@ -146,17 +146,19 @@ export default function PhysicalModule({ back, user }) {
     setActiveAction(null);
   };
 
-  if (loading) return <div className="card center" style={{marginTop:'2rem'}}><p>Loading module...</p></div>;
+  if (loading) return (
+    <PageWrapper>
+      <div className="card center" style={{marginTop:'2rem'}}><p>Loading module...</p></div>
+    </PageWrapper>
+  );
 
-  if (screen === 'setup') {
-    return <SetupScreen data={data} save={save} onComplete={() => setScreen('dashboard')} />;
-  }
-
-  if (screen === 'execute') {
-    return <ExecutionView action={activeAction} onComplete={() => markComplete(activeAction.name)} back={() => setScreen('dashboard')} />;
-  }
-
-  return <DashboardView data={data} user={user} onStart={(a) => { setActiveAction(a); setScreen('execute'); }} back={back} save={save} />;
+  return (
+    <PageWrapper>
+      {screen === 'setup' && <SetupScreen data={data} save={save} onComplete={() => setScreen('dashboard')} />}
+      {screen === 'execute' && <ExecutionView action={activeAction} onComplete={() => markComplete(activeAction.name)} back={() => setScreen('dashboard')} />}
+      {screen === 'dashboard' && <DashboardView data={data} user={user} onStart={(a) => { setActiveAction(a); setScreen('execute'); }} back={back} save={save} />}
+    </PageWrapper>
+  );
 }
 
 function SetupScreen({ data, save, onComplete }) {

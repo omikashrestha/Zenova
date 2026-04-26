@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest as request } from '../api';
 import { Droplets, GlassWater, PlusCircle, Sun, CloudSun, Thermometer, Sunrise, Sunset, Coffee, Citrus, Link, Trophy, BarChart2, CheckCircle2, Timer, ChevronLeft, Armchair, PersonStanding, Zap } from 'lucide-react';
-
+import PageWrapper from '../PageWrapper';
 const TIPS = [
   { id: 'morning_water', title: 'Start Your Day Right', text: 'Drink water right after waking up to kickstart metabolism.', icon: <Coffee size={20} color="#6B9E78" /> },
   { id: 'bottle_sight', title: 'Keep Bottle Nearby', text: 'Having water in your line of sight makes hydration effortless.', icon: <GlassWater size={20} color="#AACFE0" /> },
@@ -75,13 +75,21 @@ export default function HydrationModule({ back, user }) {
     await request('/physical', { method: 'POST', body: JSON.stringify(updated) });
   };
 
-  if (loading) return <div className="card center" style={{marginTop:'2rem'}}><p>Loading Hydration...</p></div>;
+  if (loading) return (
+    <PageWrapper>
+      <div className="card center" style={{marginTop:'2rem'}}><p>Loading Hydration...</p></div>
+    </PageWrapper>
+  );
 
-  if (!data.activityLevel || !data.weatherCondition) {
-    return <SetupScreen data={data} save={save} />;
-  }
-
-  return <HydrationDashboard data={data} save={save} back={back} />;
+  return (
+    <PageWrapper>
+      {(!data.activityLevel || !data.weatherCondition) ? (
+        <SetupScreen data={data} save={save} />
+      ) : (
+        <HydrationDashboard data={data} save={save} back={back} />
+      )}
+    </PageWrapper>
+  );
 }
 
 function SetupScreen({ data, save }) {
