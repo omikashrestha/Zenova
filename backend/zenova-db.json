@@ -59,6 +59,21 @@
       "createdAt": "2026-04-26T17:29:04.974Z",
       "ageGroup": "26–35",
       "occupation": "Working Professional"
+    },
+    {
+      "id": "cfee6af1-f896-4d86-9935-aa4c7f1c0016",
+      "name": "test",
+      "email": "test@test.com",
+      "password": "$2a$10$wM2RS5xZPIGlJa2M5a..beckVyZe3ZyfOMqNKhGXwUGLDH1rCVCVe",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-26T20:07:44.120Z",
+      "ageGroup": "46–60",
+      "occupation": "Retired",
+      "preferences": {
+        "activityLevel": "Moderate",
+        "sleepGoal": "8",
+        "waterGoal": "8"
+      }
     }
   ],
   "checkins": [
@@ -151,6 +166,20 @@
         "habit_pair",
         "flavor"
       ]
+    },
+    {
+      "id": "76de76ac-ca82-4c58-8b27-0b2d1ca94454",
+      "userId": "cfee6af1-f896-4d86-9935-aa4c7f1c0016",
+      "date": "2026-04-26",
+      "height": 123,
+      "weight": 81,
+      "activityLevel": "Moderate",
+      "timeAvailable": "10–20 minutes",
+      "createdAt": "2026-04-26T20:12:16.066Z",
+      "updatedAt": "2026-04-26T20:12:29.328Z",
+      "weatherCondition": "Hot",
+      "hydrationCount": 1,
+      "lastDrinkTime": "2026-04-26T20:12:29.323Z"
     }
   ],
   "mental": [
@@ -233,6 +262,24 @@
       "updatedAt": "2026-04-26T17:42:25.466Z",
       "routine": {
         "morning": "Wake up",
+        "midday": "Lunch",
+        "afternoon": "Work/Study",
+        "evening": "Screen Time",
+        "night": "Wind-down (Adjusted)",
+        "late": "Sleep"
+      }
+    },
+    {
+      "id": "1d6b3d9d-d0f2-46be-9dff-907fd0e48335",
+      "userId": "cfee6af1-f896-4d86-9935-aa4c7f1c0016",
+      "date": "2026-04-26",
+      "sleepTime": "17:00",
+      "wakeTime": "07:00",
+      "difficultyAsleep": "Yes",
+      "createdAt": "2026-04-26T20:08:58.782Z",
+      "updatedAt": "2026-04-26T20:32:37.995Z",
+      "routine": {
+        "morning": "Exercise",
         "midday": "Lunch",
         "afternoon": "Work/Study",
         "evening": "Screen Time",

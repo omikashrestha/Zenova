@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, User, Check, Droplets, Activity, Moon, Wind, Heart, Dumbbell, Brain } from 'lucide-react';
+import { LogOut, User, Check, Droplets, Activity, Moon, Wind, Heart, Dumbbell, Brain, ChevronRight } from 'lucide-react';
 import PhysicalModule from './modules/PhysicalModule';
 import HydrationModule from './modules/HydrationModule';
 import SleepModule from './modules/SleepModule';

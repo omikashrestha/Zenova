@@ -228,26 +228,26 @@ function SleepDashboard({ data, save, back }) {
 
 function RoutineGenerator({ data, save, back, onPrint }) {
   const [routine, setRoutine] = useState(data.routine || {
-    morning: '', midday: '', afternoon: '', evening: '', night: '', late: ''
+    '5–8 AM': '', '9–11 AM': '', '12–2 PM': '', '3–6 PM': '', '7–9 PM': '', '10–12 AM': '', '12–5 AM': ''
   });
 
   const acts = {
-    morning: ['Wake up', 'Exercise', 'Breakfast', 'Work/Study'],
-    midday: ['Lunch', 'Work/Study', 'Short Walk'],
-    afternoon: ['Work/Study', 'Coffee Break', 'Nap'],
-    evening: ['Dinner', 'Screen Time', 'Socialize', 'Exercise'],
-    night: ['Screen Time', 'Wind-down', 'Reading', 'Sleep'],
-    late: ['Sleep', 'Screen Time', 'Working']
+    '5–8 AM': ['Wake up', 'Exercise', 'Breakfast', 'Light Reading'],
+    '9–11 AM': ['Work/Study', 'Deep Work', 'Meeting'],
+    '12–2 PM': ['Lunch', 'Short Walk', 'Rest'],
+    '3–6 PM': ['Work/Study', 'Coffee/Tea Break', 'Errands'],
+    '7–9 PM': ['Dinner', 'Socializing', 'Family Time', 'Relaxing'],
+    '10–12 AM': ['Wind-down', 'Reading', 'Light Stretching', 'Screen Time'],
+    '12–5 AM': ['Sleep', 'Late Night Work', 'Screen Time']
   };
 
   const submit = () => {
-    // Generate an optimized version (only touches sleep related bad habits)
     const optimized = { ...routine };
-    if (optimized.late === 'Screen Time' || optimized.late === 'Working') {
-      optimized.late = 'Sleep (Adjusted)';
+    if (optimized['12–5 AM'] === 'Late Night Work' || optimized['12–5 AM'] === 'Screen Time') {
+      optimized['12–5 AM'] = 'Rest / Early Sleep (Gradual)';
     }
-    if (optimized.night === 'Screen Time') {
-      optimized.night = 'Wind-down (Adjusted)';
+    if (optimized['10–12 AM'] === 'Screen Time') {
+      optimized['10–12 AM'] = 'Wind-down / Reading (Optimized)';
     }
     save({ routine: optimized });
     setRoutine(optimized);
@@ -259,12 +259,12 @@ function RoutineGenerator({ data, save, back, onPrint }) {
       
       <div className="card no-print" style={{ marginBottom:'2rem' }}>
         <h2>Personalized Routine Generator</h2>
-        <p style={{color:'var(--muted)', marginBottom:'1.5rem'}}>Select your typical activities. The system will analyze and only adjust sleep-disrupting behaviors.</p>
+        <p style={{color:'var(--muted)', marginBottom:'1.5rem'}}>Select your typical activities for each time block. We only optimize sleep-disrupting habits.</p>
         
         <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap:'1rem', marginBottom:'2rem' }}>
           {Object.keys(acts).map(block => (
             <div key={block}>
-              <label style={{display:'block', marginBottom:'0.25rem', fontWeight:'bold', textTransform:'capitalize'}}>{block}</label>
+              <label style={{display:'block', marginBottom:'0.25rem', fontWeight:'bold'}}>{block}</label>
               <select value={routine[block]} onChange={e => setRoutine({...routine, [block]: e.target.value})} style={{width:'100%', padding:'0.75rem', borderRadius:'8px', border:'1px solid #ccc'}}>
                 <option value="">Select activity...</option>
                 {acts[block].map(a => <option key={a} value={a}>{a}</option>)}
@@ -285,14 +285,14 @@ function RoutineGenerator({ data, save, back, onPrint }) {
         <div style={{ position:'relative', borderLeft:'4px solid var(--dew)', marginLeft:'20px', paddingLeft:'30px', display:'flex', flexDirection:'column', gap:'2rem' }}>
           {Object.keys(acts).map((block, idx) => {
             const val = routine[block] || 'No activity set';
-            const isAdjusted = val.includes('(Adjusted)');
+            const isAdjusted = val.includes('(Gradual)') || val.includes('(Optimized)');
             return (
               <div key={block} style={{ position:'relative' }}>
                 <div style={{ position:'absolute', left:'-42px', top:'0', width:'20px', height:'20px', borderRadius:'50%', background: isAdjusted ? 'var(--peach)' : 'var(--sage)' }}></div>
                 <h4 style={{ margin:'0 0 0.25rem', textTransform:'uppercase', color:'var(--muted)', fontSize:'0.85rem' }}>{block}</h4>
                 <div style={{ display:'flex', alignItems:'center', gap:'0.75rem', padding:'1rem', background: isAdjusted ? '#FFF5F5' : 'var(--ivory)', borderRadius:'12px', border: isAdjusted ? '1px solid var(--peach)' : '1px solid #eee' }}>
                   <b style={{ fontSize:'1.1rem', color: isAdjusted ? 'var(--peach)' : 'var(--forest)' }}>{val}</b>
-                  {isAdjusted && <span style={{ fontSize:'0.8rem', background:'var(--peach)', color:'white', padding:'0.15rem 0.5rem', borderRadius:'999px' }}>Auto-Corrected</span>}
+                  {isAdjusted && <span style={{ fontSize:'0.8rem', background:'var(--peach)', color:'white', padding:'0.15rem 0.5rem', borderRadius:'999px' }}>Optimized</span>}
                 </div>
               </div>
             );
@@ -401,7 +401,7 @@ function AudioHub({ back }) {
                   autoPlay 
                   loop 
                   ref={audioRef}
-                  onPlay={() => { if (audioRef.current) audioRef.current.volume = 0.5; }}
+                  onPlay={() => { if (audioRef.current) audioRef.current.volume = track.id === 'ambient' ? 0.3 : 0.5; }}
                 />
               )}
             </div>
