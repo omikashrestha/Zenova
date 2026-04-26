@@ -8,14 +8,23 @@ const seed = {
   physical: [],
   mental: [],
   emotional: [],
+  sleep: [],
+  calm: [],
+  emotions: [],
+  journals: [],
 };
 
 export const readDB = () => {
+  let data = structuredClone(seed);
   if (fs.existsSync(DB)) {
-    return JSON.parse(fs.readFileSync(DB, "utf8"));
+    try {
+      const existing = JSON.parse(fs.readFileSync(DB, "utf8"));
+      data = { ...data, ...existing };
+    } catch (e) {
+      console.error("Error reading DB, using seed", e);
+    }
   }
-
-  return structuredClone(seed);
+  return data;
 };
 
 export const writeDB = (db) => {

@@ -43,10 +43,10 @@ export function getWeeklyInsights(req, res) {
   }
 
   const getWeekly = (key) =>
-    req.db[key].filter((x) => x.userId === userId && x.date >= minDate);
+    (req.db[key] || []).filter((x) => x.userId === userId && x.date >= minDate);
 
   const getToday = (key) =>
-    req.db[key].find((x) => x.userId === userId && x.date === today()) || null;
+    (req.db[key] || []).find((x) => x.userId === userId && x.date === today()) || null;
 
   return res.json({
     counts,
@@ -57,10 +57,12 @@ export function getWeeklyInsights(req, res) {
     physical: getWeekly("physical"),
     mental: getWeekly("mental"),
     emotional: getWeekly("emotional"),
+    sleep: getWeekly("sleep"),
     today: {
       physical: getToday("physical"),
       mental: getToday("mental"),
       emotional: getToday("emotional"),
+      sleep: getToday("sleep"),
       checkin: getToday("checkins"),
     },
   });

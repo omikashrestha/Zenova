@@ -7,6 +7,9 @@ import userRoutes from "./routes/user.js";
 import checkinRoutes from "./routes/checkin.js";
 import insightsRoutes from "./routes/insights.js";
 import coachRoutes from "./routes/coach.js";
+import mindRoutes from "./routes/mind.js";
+import auth from "./middleware/auth.js";
+import { savePhysical, saveMental, saveEmotional, saveSleep, saveCalm } from "./controllers/coachController.js";
 
 dotenv.config();
 
@@ -27,36 +30,15 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/checkin", checkinRoutes);
 app.use("/api/insights", insightsRoutes);
-
-/**
- * New structured coach routes:
- * /api/coach/physical
- * /api/coach/mental
- * /api/coach/emotional
- */
 app.use("/api/coach", coachRoutes);
+app.use("/api", mindRoutes);
 
-/**
- * Backward compatibility for your existing frontend:
- * These keep old endpoints working:
- * /api/physical
- * /api/mental
- * /api/emotional
- */
-app.use("/api/physical", (req, res, next) => {
-  req.url = "/";
-  coachRoutes(req, res, next);
-});
-
-app.use("/api/mental", (req, res, next) => {
-  req.url = "/";
-  coachRoutes(req, res, next);
-});
-
-app.use("/api/emotional", (req, res, next) => {
-  req.url = "/";
-  coachRoutes(req, res, next);
-});
+// Backward compatibility legacy routes
+app.post("/api/physical", auth, savePhysical);
+app.post("/api/mental", auth, saveMental);
+app.post("/api/emotional", auth, saveEmotional);
+app.post("/api/sleep", auth, saveSleep);
+app.post("/api/calm", auth, saveCalm);
 
 const PORT = process.env.PORT || 5003;
 

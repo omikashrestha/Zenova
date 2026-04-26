@@ -2,7 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, User, Check, Droplets, Activity } from 'lucide-react';
+import { LogOut, User, Check, Droplets, Activity, Moon, Wind, Heart, Dumbbell, Brain } from 'lucide-react';
+import PhysicalModule from './modules/PhysicalModule';
+import HydrationModule from './modules/HydrationModule';
+import SleepModule from './modules/SleepModule';
+import CalmModule from './modules/CalmModule';
+import MindModule from './modules/MindModule';
 import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts';
 import './styles.css';
 import imgMovement from './assets/img-movement.jpg';
@@ -45,10 +50,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/onboarding" element={<Guard><Onboarding /></Guard>} />
-        <Route path="/dashboard" element={<Guard><Dashboard /></Guard>} />
-        <Route path="/profile" element={<Guard><Profile /></Guard>} />
+        <Route path="/dashboard" element={<Guard><Home /></Guard>} />
         <Route path="*" element={<Navigate to="/" />} />
-        <Route path="/coach" element={<Coach />} />
       </Routes>
     </BrowserRouter>
   );
@@ -151,8 +154,6 @@ function Avatar() {
 
       {open && (
         <div className="drop">
-          <a href="/profile"><User size={15}/> My Profile</a>
-
           <button
             onClick={() => {
                 localStorage.clear();
@@ -161,7 +162,7 @@ function Avatar() {
             }}
          >
             <LogOut size={15} /> Log out
-        </button>
+          </button>
         </div>
       )}
     </div>
@@ -174,8 +175,6 @@ function AppNav() {
       <Logo />
       <div>
         <a href="/dashboard">Home</a>
-        <a href="/profile">Profile</a>
-        <a href="/coach">Coach</a>
       </div>
       <Avatar />
     </nav>
@@ -565,1301 +564,106 @@ const moodEm = {
   Neutral: '😐',
   Stressed: '😰',
 };
-const coachModules = [
-  {
-    id: 'sleep',
-    title: 'Sleep & Recovery',
-    emoji: '🌙',
-    color: 'sky',
-    description: 'Understand sleep quality, recovery, and rest patterns.',
-  },
-  {
-    id: 'energy',
-    title: 'Energy / Stamina',
-    emoji: '⚡',
-    color: 'sage',
-    description: 'Track body energy, fatigue, movement, and stamina.',
-  },
-  {
-    id: 'hydration',
-    title: 'Water Intake',
-    emoji: '💧',
-    color: 'sky',
-    description: 'Track hydration and get gentle water goals.',
-  },
-  {
-    id: 'journal',
-    title: 'Journaling / Worry Release',
-    emoji: '📓',
-    color: 'lav',
-    description: 'Release one worry and receive a calming reframe.',
-  },
-  {
-    id: 'mindfulness',
-    title: 'Meditation & Mindfulness',
-    emoji: '🧘',
-    color: 'lav',
-    description: 'Choose a short calming practice based on your need.',
-  },
-  {
-    id: 'emotional',
-    title: 'Emotional Wellbeing',
-    emoji: '💗',
-    color: 'peach',
-    description: 'Track mood, connection, gratitude, and emotional energy.',
-  },
-  {
-    id: 'stress',
-    title: 'Stress / Overload',
-    emoji: '🌩️',
-    color: 'peach',
-    description: 'Understand overload and get clinician-lite suggestions.',
-  },
-];
 
-const activeModuleIds = (weekly) => {
-  const t = weekly?.today || {};
-  const ids = [];
+// --- ACTION-BASED REFACTOR ---
 
-  if (t.physical?.sleepScore || t.physical?.sleepHours || t.physical?.sleepIssue) ids.push('sleep');
-  if (t.physical?.bodyEnergy || t.physical?.movement || t.physical?.fatigueCause) ids.push('energy');
-  if (t.physical?.hydration) ids.push('hydration');
-  if (t.mental?.worryText || t.mental?.worryEmotion || t.mental?.worryIntensity) ids.push('journal');
-  if (t.mental?.mindfulnessGoal) ids.push('mindfulness');
-  if (t.emotional?.mood || t.checkin?.mood || t.emotional?.socialConnection || t.emotional?.gratitude || t.emotional?.energyEmotion) ids.push('emotional');
-  if (t.mental?.stressLevel || t.mental?.cognitiveLoad || t.checkin?.mood === 'Stressed') ids.push('stress');
-
-  return [...new Set(ids)];
-};
-
-const moduleScores = (weekly) => {
-  const t = weekly?.today || {};
-  const p = t.physical || {};
-  const m = t.mental || {};
-  const e = t.emotional || {};
-  const c = t.checkin || {};
-
-  const scoreMap = {};
-
-  if (p.sleepScore || p.sleepHours || p.sleepIssue) {
-    const sleepParts = [
-        p.sleepScore ? p.sleepScore * 20 : null,
-        p.sleepHours ? Math.min((p.sleepHours / 8) * 100, 100) : null,
-        p.refreshed === 'Yes' ? 100 : p.refreshed === 'Somewhat' ? 60 : p.refreshed === 'No' ? 20 : null,
-    ].filter((x) => x !== null);
-
-    scoreMap.sleep = Math.round(sleepParts.length ? avg(sleepParts) : 0);
-  }
-
-  if (p.bodyEnergy || p.movement || p.fatigueCause) {
-    scoreMap.energy = Math.round(avg([
-      { Light: 85, Normal: 100, Heavy: 45, Drained: 15 }[p.bodyEnergy] || 0,
-      { Yes: 100, 'A little': 55, No: 20 }[p.movement] || 0,
-    ]));
-  }
-
-  if (p.hydration) {
-    scoreMap.hydration = Math.round(Math.min((p.hydration / 8) * 100, 100));
-  }
-
-  if (m.worryText || m.worryEmotion || m.worryIntensity) {
-    scoreMap.journal = Math.round(avg([
-      m.worryText ? 70 : 0,
-      m.worryIntensity ? Math.max(100 - (m.worryIntensity * 10), 10) : 50,
-    ]));
-  }
-
-  if (m.mindfulnessGoal || m.mindfulnessIntensity || m.mindfulnessTime || m.mindfulnessState) {
-  const intensityScore = m.mindfulnessIntensity
-    ? Math.max(100 - m.mindfulnessIntensity * 8, 10)
-    : null;
-
-  const stateScore =
-    {
-      Calm: 90,
-      Restless: 55,
-      Overthinking: 45,
-      Tense: 40,
-      Exhausted: 35,
-    }[m.mindfulnessState] ?? null;
-
-  const timeScore =
-    {
-      '1 minute': 45,
-      '3 minutes': 60,
-      '5 minutes': 75,
-      '10 minutes': 90,
-    }[m.mindfulnessTime] ?? null;
-
-  const parts = [intensityScore, stateScore, timeScore].filter((x) => x !== null);
-
-  scoreMap.mindfulness = Math.round(parts.length ? avg(parts) : 65);
-}
-
-  if (e.mood || c.mood || e.socialConnection || e.gratitude || e.energyEmotion) {
-    const moodScore = { Good: 100, Neutral: 60, Stressed: 20 }[e.mood || c.mood] ?? null;
-const socialScore = { Yes: 100, Brief: 60, 'Not today': 20 }[e.socialConnection] ?? null;
-const gratitudeScore = e.gratitude ? 70 : null;
-const energyScore = { Excited: 100, Calm: 85, Flat: 45, Drained: 20 }[e.energyEmotion] ?? null;
-
-const emotionalParts = [];
-
-if (moodScore !== null) emotionalParts.push(moodScore * 0.45);
-if (socialScore !== null) emotionalParts.push(socialScore * 0.20);
-if (gratitudeScore !== null) emotionalParts.push(gratitudeScore * 0.10);
-if (energyScore !== null) emotionalParts.push(energyScore * 0.25);
-
-const emotionalWeight =
-  (moodScore !== null ? 0.45 : 0) +
-  (socialScore !== null ? 0.20 : 0) +
-  (gratitudeScore !== null ? 0.10 : 0) +
-  (energyScore !== null ? 0.25 : 0);
-
-scoreMap.emotional = Math.round(
-  emotionalWeight ? emotionalParts.reduce((a, b) => a + b, 0) / emotionalWeight : 0
-);
-  }
-
-  if (m.stressLevel || m.cognitiveLoad || c.mood === 'Stressed') {
-    scoreMap.stress = Math.round(avg([
-      m.stressLevel ? Math.max(100 - (m.stressLevel * 10), 5) : 50,
-      { Calm: 100, Manageable: 65, Overloaded: 20 }[m.cognitiveLoad] || 0,
-      c.mood === 'Stressed' ? 20 : c.mood === 'Neutral' ? 60 : c.mood === 'Good' ? 100 : 50,
-    ]));
-  }
-
-  return scoreMap;
-};
-
-const coachFeedback = (moduleId, weekly) => {
-  const t = weekly?.today || {};
-  const p = t.physical || {};
-  const m = t.mental || {};
-  const e = t.emotional || {};
-  const c = t.checkin || {};
-  const scores = moduleScores(weekly);
-  const s = scores[moduleId] ?? 0;
-
-  const level = s < 40 ? 'Needs support' : s < 65 ? 'Moderate' : 'Stable';
-
-  const base = {
-    sleep: {
-      title: 'Sleep recovery check',
-      reason: `Your sleep score is influenced by quality, hours, and how refreshed you felt.`,
-      action: s < 40 ? 'Tonight, reduce screen exposure 30 minutes before bed and try 4-7-8 breathing.' : 'Keep your sleep routine consistent tonight.',
-      why: 'Sleep affects emotional regulation, focus, and stress recovery.',
-    },
-    energy: {
-      title: 'Energy pattern',
-      reason: `Your energy is shaped by body heaviness, movement, and fatigue cause.`,
-      action: s < 40 ? 'Try a 5–10 minute gentle walk and hydrate before using caffeine.' : 'Maintain light movement to preserve stamina.',
-      why: 'Low movement and drained body signals commonly reduce mental focus.',
-    },
-    hydration: {
-      title: 'Hydration status',
-      reason: `You logged ${p.hydration || 0}/8 cups today.`,
-      action: (p.hydration || 0) < 4 ? 'Drink 1 glass now and aim for 2 more within the next 2 hours.' : 'You are progressing well. Keep sipping steadily.',
-      why: 'Hydration supports energy, headache prevention, and concentration.',
-    },
-    journal: {
-      title: 'Worry release',
-      reason: m.worryText ? `You named a worry linked to ${m.worryEmotion || 'mental load'}.` : 'Journaling works best when one specific worry is named.',
-      action: 'Ask: “What is one small thing I can control in the next 10 minutes?”',
-      why: 'Naming a worry reduces emotional intensity and makes it easier to act.',
-    },
-    mindfulness: {
-        title: 'Mindfulness recommendation',
-        reason: `You selected ${m.mindfulnessGoal || 'support'} with intensity ${
-            m.mindfulnessIntensity || 5
-        }/10 and current state: ${m.mindfulnessState || 'not specified'}.`,
-        action:
-            m.mindfulnessGoal === 'Sleep'
-            ? 'Try a 3-minute body scan: relax your forehead, jaw, shoulders, chest, and legs slowly.'
-            : m.mindfulnessGoal === 'Focus'
-            ? 'Try box breathing: inhale 4s, hold 4s, exhale 4s, hold 4s for 3 rounds.'
-            : m.mindfulnessGoal === 'Anxiety relief'
-            ? 'Try 5-4-3-2-1 grounding: notice 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste.'
-            : m.mindfulnessGoal === 'Emotional reset'
-            ? 'Place one hand on your chest, name the emotion, and say: “This is temporary. I can take one gentle step.”'
-            : 'Try slow breathing: inhale for 4 seconds and exhale for 6 seconds for 2 minutes.',
-        why: 'Different mindfulness goals need different techniques; intensity and current state help Zenova choose a calmer next step.',
-    },
-    emotional: {
-      title: 'Emotional wellbeing',
-      reason: `Your emotional state reflects mood, social connection, gratitude, and emotional energy.`,
-      action: s < 40 ? 'Send one simple message to someone safe or write one thing that felt okay today.' : 'Protect what helped your mood today.',
-      why: 'Connection and gratitude act as protective factors during stress.',
-    },
-    stress: {
-      title: 'Stress / overload scan',
-      reason: `Stress is influenced by mood, task load, and intensity.`,
-      action: s < 40 ? 'Do not add more tasks. Pick one priority and pause everything else for 30 minutes.' : 'Use a short reset before continuing work.',
-      why: 'When cognitive load is high, reducing decision load is more effective than forcing productivity.',
-    },
-  };
-
-  const item = base[moduleId];
-
-  return {
-    level,
-    score: s,
-    ...item,
-  };
-};
-
-const smartSummary = (weekly) => {
-  const scores = moduleScores(weekly);
-  const entries = Object.entries(scores).sort((a, b) => a[1] - b[1]);
-
-  if (!entries.length) {
-    return 'Start by choosing one area Zenova can support today.';
-  }
-
-  const lowest = entries.slice(0, 2).map(([id]) => coachModules.find((m) => m.id === id)?.title).filter(Boolean);
-
-  if (entries[0][1] < 40) {
-    return `Your current state needs support mainly around ${lowest.join(' and ')}. Start with one small action, not a full lifestyle change.`;
-  }
-
-  if (entries[0][1] < 65) {
-    return `You are moderately balanced, but ${lowest[0]} may need attention today.`;
-  }
-
-  return 'Your tracked areas look stable today. Keep the routine gentle and consistent.';
-};
-function Weekly({ weekly }) {
-  return (
-    <div className="card">
-      <h3>Weekly Reflection</h3>
-      <p>{weekly?.summary || 'No check-ins this week. Start your wellness journey today!'}</p>
-
-      <div className="chips">
-        <span>😊 {weekly?.counts?.Good || 0} Good</span>
-        <span>😐 {weekly?.counts?.Neutral || 0} Neutral</span>
-        <span>😰 {weekly?.counts?.Stressed || 0} Stressed</span>
-      </div>
-    </div>
-  );
-}
-
-function Dashboard() {
-  const [view, setView] = useState('Overview');
-  const [weekly, setWeekly] = useState(null);
-  const [result, setResult] = useState(null);
-  const [err, setErr] = useState('');
-  const [focus, setFocus] = useState([]);
-
-    const toggleFocus = (item) => {
-    setFocus((prev) =>
-        prev.includes(item)
-        ? prev.filter((i) => i !== item)
-        : [...prev, item]
-    );
-    };
-
-
-  const user = safeUser ? safeUser() : JSON.parse(localStorage.getItem('user') || '{}');
-
-  const load = () =>
-    request('/insights/weekly')
-      .then(setWeekly)
-      .catch((e) => setErr(e.message));
-
-  useEffect(load, []);
-
-  const score = useMemo(() => calcScore(weekly), [weekly]);
-
-  return (
-    <>
-      <AppNav />
-
-      <main className="dash">
-        <div className="card">
-            <h3>What do you want to focus on today?</h3>
-
-            {["Sleep", "Stress", "Energy", "Hydration", "Mood"].map((item) => (
-                <button
-                    key={item}
-                    className={`chip ${focus.includes(item) ? "active" : ""}`}
-                    onClick={() => toggleFocus(item)}
-                >
-                    {item}
-                </button>
-            ))}
-        </div>
-        {focus.length > 0 && (
-  <div className="card">
-    <h3>Your selected focus</h3>
-    <p>
-      Zenova will personalize today’s overview based on:{" "}
-      <b>{focus.join(", ")}</b>
-    </p>
-
-    {focus.includes("Sleep") && (
-      <p>🌙 Sleep support will look at recovery, sleep quality, and rest patterns.</p>
-    )}
-
-    {focus.includes("Stress") && (
-      <p>🌩️ Stress support will check overload, mood pressure, and recovery needs.</p>
-    )}
-
-    {focus.includes("Energy") && (
-      <p>⚡ Energy support will connect movement, fatigue, and body heaviness.</p>
-    )}
-
-    {focus.includes("Hydration") && (
-      <p>💧 Hydration support will track water intake and low-energy signals.</p>
-    )}
-
-    {focus.includes("Mood") && (
-      <p>💗 Mood support will track emotional state, connection, and gratitude.</p>
-    )}
-  </div>
-)}
-        {err && <div className="banner">{err}</div>}
-
-        <div className="tabbar">
-          {['Overview', 'Smart Coach', 'Physical', 'Mental', 'Emotional'].map((item) => (
-            <button
-              key={item}
-              className={view === item ? 'active ' + item.replace(' ', '') : ''}
-              onClick={() => setView(item)}
-            >
-              {item}
-            </button>
-          ))}
-        </div>
-
-        {view === 'Overview' && (
-          <Overview
-            user={user}
-            weekly={weekly}
-            result={result}
-            setResult={setResult}
-            load={load}
-            score={score}
-            goCoach={() => setView('Smart Coach')}
-          />
-        )}
-
-        {view === 'Smart Coach' && (
-          <SmartCoach weekly={weekly} load={load} setResult={setResult} goOverview={() => setView('Overview')} />
-        )}
-
-        {view === 'Physical' && (
-  focus.length === 0 || focus.some((x) => ["Sleep", "Energy", "Hydration"].includes(x)) ? (
-    <Physical weekly={weekly} load={load} />
-  ) : (
-    <div className="card">
-      <h3>Physical tracking is hidden today</h3>
-      <p>Select Sleep, Energy, or Hydration above to use this section.</p>
-    </div>
-  )
-)}
-
-{view === 'Mental' && (
-  focus.length === 0 || focus.some((x) => ["Stress"].includes(x)) ? (
-    <Mental weekly={weekly} load={load} />
-  ) : (
-    <div className="card">
-      <h3>Mental tracking is hidden today</h3>
-      <p>Select Stress above to use this section.</p>
-    </div>
-  )
-)}
-
-{view === 'Emotional' && (
-  focus.length === 0 || focus.some((x) => ["Mood", "Stress"].includes(x)) ? (
-    <Emotional weekly={weekly} load={load} setResult={setResult} />
-  ) : (
-    <div className="card">
-      <h3>Emotional tracking is hidden today</h3>
-      <p>Select Mood or Stress above to use this section.</p>
-    </div>
-  )
-)}
-      </main>
-    </>
-  );
-}
-function Overview({ user, weekly, result, setResult, load, score, goCoach }) {
+function Home() {
+  const [activeModule, setActiveModule] = useState(null);
+  const [user] = useState(safeUser());
   const hr = new Date().getHours();
   const greeting = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
-  const selected = activeModuleIds(weekly);
-  const scores = moduleScores(weekly);
 
-  const check = async (mood) => {
-    try {
-      const j = await request('/checkin', {
-        method: 'POST',
-        body: JSON.stringify({ mood }),
-      });
+  const cards = [
+    { id: 'physical', title: 'Physical Activity', icon: <Dumbbell size={28} color="#6B9E78" />, color: 'var(--sage)' },
+    { id: 'hydration', title: 'Hydration', icon: <Droplets size={28} color="#AACFE0" />, color: 'var(--sky)' },
+    { id: 'sleep', title: 'Sleep', icon: <Moon size={28} color="#9B8FCA" />, color: 'var(--lav)' },
+    { id: 'calm', title: 'Calm & Reset', icon: <Wind size={28} color="#6B9E78" />, color: 'var(--peach)' },
+    { id: 'mind', title: 'Mind & Emotions', icon: <Brain size={28} color="#9B8FCA" />, color: 'var(--dew)' },
+  ];
 
-      setTimeout(() => setResult({ ...j, mood }), 300);
-      load();
-    } catch {
-      alert('Could not save check-in. Please try again.');
-    }
-  };
-
-  return (
-    <div className="overview">
-      <section className="greet card">
-        <div>
-          <h1>
-            {greeting}, {(user.name || 'there').split(' ')[0]}.
-          </h1>
-          <p>What would you like Zenova to help you understand today?</p>
-        </div>
-
-        <button className="primary" onClick={goCoach}>
-          Open Smart Coach
-        </button>
-      </section>
-
-      <section className="card coachSummary">
-        <h2>Today’s wellness picture</h2>
-        <p>{smartSummary(weekly)}</p>
-
-        <div className="chips">
-          {selected.length ? (
-            selected.map((id) => {
-              const mod = coachModules.find((m) => m.id === id);
-              return <span key={id}>{mod?.emoji} {mod?.title}</span>;
-            })
-          ) : (
-            <span>No areas tracked yet</span>
-          )}
-        </div>
-      </section>
-
-      <Wellness score={score} moduleScores={scores} selectedModules={selected} />
-
-      {!result ? <MoodBox check={check} /> : <Result result={result} again={() => setResult(null)} />}
-
-      <Insights weekly={weekly} score={score} />
-
-      <Weekly weekly={weekly} />
-    </div>
-  );
-}
-function MoodBox({ check }) {
-  return (
-    <div className="card micro">
-      <h3>Daily check-in</h3>
-      <p>Tap to log your mood — takes just a second</p>
-
-      <div className="moods">
-        {['Good', 'Neutral', 'Stressed'].map((mood) => (
-          <button key={mood} onClick={() => check(mood)}>
-            {moodEm[mood]} {mood}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Result({ result, again }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-      {result.recoveryMode && (
-        <div className="card recovery">
-          <h2>🔄 Recovery mode activated</h2>
-          <p>You have logged stressed 3 times in a row. One thing at a time.</p>
-          <b>Take a 2-minute break — step away from everything.</b>
-        </div>
-      )}
-
-      <div className={'card weather ' + result.mood}>
-        <span>{result.weather.emoji}</span>
-        <h2>{result.weather.label}</h2>
-        <p>{result.weather.description}</p>
-      </div>
-
-      {!result.recoveryMode && (
-        <div className="card recommend">
-          <h3>Recommendation</h3>
-          <p>{result.suggestion}</p>
-        </div>
-      )}
-
-      <button onClick={again} className="ghost">
-        ← Check in again
-      </button>
-    </motion.div>
-  );
-}
-
-function Wellness({ score, moduleScores: scores = {}, selectedModules = [] }) {
-  const selected = selectedModules.length ? selectedModules : Object.keys(scores);
-
-  return (
-    <div className="card wellness">
-      <h3>Unified Wellness Score</h3>
-
-      <div className="ring">
-        <ResponsiveContainer>
-          <RadialBarChart
-            innerRadius="70%"
-            outerRadius="95%"
-            data={[{ name: 'score', value: score.total, fill: colors.sage }]}
-            startAngle={90}
-            endAngle={-270}
-          >
-            <RadialBar dataKey="value" cornerRadius={18} />
-          </RadialBarChart>
-        </ResponsiveContainer>
-
-        <b>{score.total}</b>
-      </div>
-
-      <p>
-        {selected.length
-          ? `Calculated from ${selected.length} active area${selected.length > 1 ? 's' : ''} you chose to track.`
-          : 'Choose one area in Smart Coach to build your wellness score.'}
-      </p>
-
-      {selected.length ? (
-        selected.map((id) => {
-          const mod = coachModules.find((m) => m.id === id);
-          const value = scores[id] || 0;
-
-          return (
-            <div className="bar" key={id}>
-              <span>{mod?.emoji} {mod?.title || id}</span>
-              <i style={{ width: value + '%' }} />
-              <small>{value}</small>
-            </div>
-          );
-        })
-      ) : (
-        <div className="emptyHint">No active modules yet.</div>
-      )}
-    </div>
-  );
-}
-function Insights({ weekly, score }) {
-  const today = weekly?.today || {};
-  const out = [];
-
-  if (today.physical?.sleepScore <= 2 && (weekly?.counts?.Stressed || 0) >= 3) {
-    out.push([
-      'Sleep → Stress',
-      'Low sleep is amplifying your stress. Recent stressed days followed nights of poor sleep.',
-      'Physical → Emotional',
-    ]);
+  if (activeModule === 'physical') {
+    return <PhysicalModule back={() => setActiveModule(null)} user={user} />;
   }
 
-  if (today.physical?.movement === 'Yes' && today.mental?.focus >= 4) {
-    out.push([
-      'Movement → Focus',
-      'Your movement today boosted your focus. Focus is stronger on days you move.',
-      'Physical → Mental',
-    ]);
+  if (activeModule === 'hydration') {
+    return <HydrationModule back={() => setActiveModule(null)} user={user} />;
   }
 
-  if ((weekly?.emotional || []).filter((x) => x.socialConnection === 'Yes').length >= 3 && score.emotional > 55) {
-    out.push([
-      'Social Connection → Mood',
-      'Social connection is protecting your mood. Emotional scores improve on connected days.',
-      'Emotional',
-    ]);
+  if (activeModule === 'sleep') {
+    return <SleepModule back={() => setActiveModule(null)} />;
   }
 
-  if (today.mental?.digitalFatigue === 'Draining' && today.physical?.bodyEnergy === 'Drained') {
-    out.push([
-      'Digital Fatigue → Energy',
-      'Screen time is draining your physical energy. Both signals are low today.',
-      'Mental → Physical',
-    ]);
+  if (activeModule === 'calm') {
+    return <CalmModule back={() => setActiveModule(null)} />;
   }
 
-  if (today.mental?.cognitiveLoad === 'Overloaded' && today.checkin?.mood === 'Stressed') {
-    out.push([
-      'Cognitive Load → Stress',
-      'Task overwhelm and emotional stress are occurring together. Break your task list into smaller steps.',
-      'Mental → Emotional',
-    ]);
+  if (activeModule === 'mind') {
+    return <MindModule back={() => setActiveModule(null)} onNavigate={(id) => setActiveModule(id)} />;
   }
 
-  return (
-    <section>
-      <h2>Cross-domain insights</h2>
-
-      {out.length ? (
-        out.map((item) => (
-          <div className="card insight" key={item[0]}>
-            <b>{item[0]}</b>
-            <p>{item[1]}</p>
-            <span>{item[2]}</span>
-          </div>
-        ))
-      ) : (
-        <div className="card">
-          Keep logging daily to unlock personalised connections between your physical, mental, and emotional health.
-        </div>
-      )}
-    </section>
-  );
-}
-function SmartCoach({ weekly, load, setResult, goOverview }) {
-  const [active, setActive] = useState(null);
-
-  return (
-    <section className="coachPage">
-      <div className="coachHero card">
-        <div>
-          <h1>Zenova Smart Coach</h1>
-          <p>Choose what you want support with today. Zenova will track only that area and give personalized feedback.</p>
-        </div>
-        <button className="ghost" onClick={goOverview}>View overview</button>
-      </div>
-
-      {!active ? (
-        <div className="coachGrid">
-          {coachModules.map((m) => (
-            <button className={'coachCard ' + m.color} key={m.id} onClick={() => setActive(m.id)}>
-              <span>{m.emoji}</span>
-              <h3>{m.title}</h3>
-              <p>{m.description}</p>
-            </button>
-          ))}
-        </div>
-      ) : (
-        <CoachModule
-          id={active}
-          weekly={weekly}
-          load={load}
-          setResult={setResult}
-          back={() => setActive(null)}
-        />
-      )}
-    </section>
-  );
-}
-
-function CoachModule({ id, weekly, load, setResult, back }) {
-  const today = weekly?.today || {};
-  const [physical, setPhysical] = useState(today.physical || {});
-  const [mental, setMental] = useState(today.mental || {});
-  const [emotional, setEmotional] = useState(today.emotional || {});
-  const [feedback, setFeedback] = useState(coachFeedback(id, weekly));
-
-  useEffect(() => {
-    setFeedback(coachFeedback(id, weekly));
-  }, [weekly, id]);
-
-  const savePhysical = async (data) => {
-  const updated = { ...physical, ...data };
-  setPhysical(updated);
-
-  const tempWeekly = {
-    ...weekly,
-    today: {
-      ...(weekly?.today || {}),
-      physical: updated,
-    },
-  };
-
-  setFeedback(coachFeedback(id, tempWeekly));
-
-  await request('/physical', {
-    method: 'POST',
-    body: JSON.stringify(updated),
-  });
-
-  await load();
-};
-
-  const saveMental = async (data) => {
-  const updated = { ...mental, ...data };
-  setMental(updated);
-
-  const tempWeekly = {
-    ...weekly,
-    today: {
-      ...(weekly?.today || {}),
-      mental: updated,
-    },
-  };
-
-  setFeedback(coachFeedback(id, tempWeekly));
-
-  await request('/mental', {
-    method: 'POST',
-    body: JSON.stringify(updated),
-  });
-
-  await load();
-};
-
-  const saveEmotional = async (data) => {
-  const updated = { ...emotional, ...data };
-  setEmotional(updated);
-
-  const tempWeekly = {
-    ...weekly,
-    today: {
-      ...(weekly?.today || {}),
-      emotional: updated,
-    },
-  };
-
-  setFeedback(coachFeedback(id, tempWeekly));
-
-  await request('/emotional', {
-    method: 'POST',
-    body: JSON.stringify(updated),
-  });
-
-  await load();
-};
-
-  const saveMood = async (mood) => {
-    const j = await request('/checkin', { method: 'POST', body: JSON.stringify({ mood }) });
-    setResult({ ...j, mood });
-    await load();
-  };
-
-  const mod = coachModules.find((m) => m.id === id);
-
-  return (
-    <div className="moduleFlow">
-      <button className="ghost" onClick={back}>← Choose another area</button>
-
-      <div className="card moduleHeader">
-        <span>{mod?.emoji}</span>
-        <div>
-          <h1>{mod?.title}</h1>
-          <p>{mod?.description}</p>
-        </div>
-      </div>
-
-      {id === 'sleep' && (
-        <div className="grid">
-          <Choice title="How did you sleep last night?" opts={[1, 2, 3, 4, 5]} val={physical.sleepScore} save={(v) => savePhysical({ sleepScore: v })} />
-          <div className="card">
-            <h3>How many hours did you sleep?</h3>
-            <input type="number" min="0" max="12" value={physical.sleepHours || ''} onChange={(e) => savePhysical({ sleepHours: Number(e.target.value) })} placeholder="Example: 6" />
-          </div>
-          <Choice title="Did you wake up refreshed?" opts={['Yes', 'Somewhat', 'No']} val={physical.refreshed} save={(v) => savePhysical({ refreshed: v })} />
-          <Choice title="Main sleep issue" opts={['Late sleep', 'Waking up', 'Phone use', 'Stress', 'None']} val={physical.sleepIssue} save={(v) => savePhysical({ sleepIssue: v })} />
-        </div>
-      )}
-
-      {id === 'energy' && (
-        <div className="grid">
-          <Choice title="How does your body feel right now?" opts={['Light', 'Normal', 'Heavy', 'Drained']} val={physical.bodyEnergy} save={(v) => savePhysical({ bodyEnergy: v })} />
-          <Choice title="Did your body move today?" opts={['Yes', 'A little', 'No']} val={physical.movement} save={(v) => savePhysical({ movement: v })} />
-          <Choice title="What is likely causing fatigue?" opts={['Sleep', 'Workload', 'Emotions', 'Screen time', 'Unknown']} val={physical.fatigueCause} save={(v) => savePhysical({ fatigueCause: v })} />
-        </div>
-      )}
-
-      {id === 'hydration' && (
-        <div className="grid">
-          <Cups val={physical.hydration || 0} save={(v) => savePhysical({ hydration: v })} />
-          <Choice title="Any dehydration signs?" opts={['Headache', 'Dry mouth', 'Low energy', 'None']} val={physical.hydrationSign} save={(v) => savePhysical({ hydrationSign: v })} />
-        </div>
-      )}
-
-      {id === 'journal' && (
-        <div className="grid">
-          <div className="card">
-            <h3>What is weighing on you?</h3>
-            <input maxLength="150" placeholder="Name one worry..." value={mental.worryText || ''} onChange={(e) => saveMental({ worryText: e.target.value })} />
-          </div>
-          <Choice title="What emotion is attached to it?" opts={['Anxious', 'Sad', 'Angry', 'Overwhelmed', 'Unsure']} val={mental.worryEmotion} save={(v) => saveMental({ worryEmotion: v })} />
-          <div className="card">
-            <h3>Intensity from 1–10</h3>
-            <input type="range" min="1" max="10" value={mental.worryIntensity || 5} onChange={(e) => saveMental({ worryIntensity: Number(e.target.value) })} />
-            <b>{mental.worryIntensity || 5}</b>
-          </div>
-        </div>
-      )}
-
-      {id === 'mindfulness' && (
-  <div className="grid">
-    <Choice
-      title="What do you need right now?"
-      opts={['Calm down', 'Focus', 'Sleep', 'Anxiety relief', 'Emotional reset']}
-      val={mental.mindfulnessGoal}
-      save={(v) => saveMental({ mindfulnessGoal: v })}
-    />
-
-    <div className="card">
-      <h3>How intense is this need?</h3>
-      <input
-        type="range"
-        min="1"
-        max="10"
-        value={mental.mindfulnessIntensity || 5}
-        onChange={(e) => saveMental({ mindfulnessIntensity: Number(e.target.value) })}
-      />
-      <b>{mental.mindfulnessIntensity || 5}/10</b>
-    </div>
-
-    <Choice
-      title="How much time do you have?"
-      opts={['1 minute', '3 minutes', '5 minutes', '10 minutes']}
-      val={mental.mindfulnessTime}
-      save={(v) => saveMental({ mindfulnessTime: v })}
-    />
-
-    <Choice
-      title="What is your current state?"
-      opts={['Calm', 'Restless', 'Overthinking', 'Tense', 'Exhausted']}
-      val={mental.mindfulnessState}
-      save={(v) => saveMental({ mindfulnessState: v })}
-    />
-  </div>
-)}
-
-      {id === 'emotional' && (
-        <div className="grid">
-        <Choice
-        title="Mood Check-In"
-        opts={['Good', 'Neutral', 'Stressed']}
-        val={emotional.mood || today.checkin?.mood}
-        save={(v) => {
-            setEmotional({ ...emotional, mood: v });
-            saveMood(v);
-        }}
-        />          
-        <Choice title="Did you have a meaningful interaction today?" opts={['Yes', 'Brief', 'Not today']} val={emotional.socialConnection} save={(v) => saveEmotional({ socialConnection: v })} />
-          <div className="card">
-            <h3>Did something good happen today?</h3>
-            <button
-                className={emotional.gratitude ? 'primary' : 'ghost'}
-                onClick={() => saveEmotional({ gratitude: !emotional.gratitude })}
-            >
-                {emotional.gratitude ? 'Marked ✓' : 'Mark today ✓'}
-            </button>
-          </div>
-          <Choice title="What is your emotional energy right now?" opts={['Excited', 'Calm', 'Flat', 'Drained']} val={emotional.energyEmotion} save={(v) => saveEmotional({ energyEmotion: v })} />
-        </div>
-      )}
-
-      {id === 'stress' && (
-        <div className="grid">
-          <div className="card">
-            <h3>Stress level from 1–10</h3>
-            <input type="range" min="1" max="10" value={mental.stressLevel || 5} onChange={(e) => saveMental({ stressLevel: Number(e.target.value) })} />
-            <b>{mental.stressLevel || 5}</b>
-          </div>
-          <Choice title="How loaded is your mind with tasks?" opts={['Calm', 'Manageable', 'Overloaded']} val={mental.cognitiveLoad} save={(v) => saveMental({ cognitiveLoad: v })} />
-          <Choice title="Main trigger" opts={['Deadlines', 'Studies', 'Family', 'Health', 'Money', 'Unknown']} val={mental.stressTrigger} save={(v) => saveMental({ stressTrigger: v })} />
-          <Choice title="Body signal" opts={['Tense', 'Tired', 'Restless', 'Heavy', 'None']} val={mental.bodySignal} save={(v) => saveMental({ bodySignal: v })} />
-        </div>
-      )}
-
-      <CoachFeedback feedback={feedback} />
-    </div>
-  );
-}
-
-function CoachFeedback({ feedback }) {
-  return (
-    <div className={'card coachFeedback ' + (feedback.score < 40 ? 'critical' : feedback.score < 65 ? 'moderate' : 'stable')}>
-      <div className="feedbackTop">
-        <div>
-          <span className="miniLabel">Smart Coach Response</span>
-          <h2>{feedback.title}</h2>
-        </div>
-        <b>{feedback.score}/100</b>
-      </div>
-
-      <div className="feedbackLevel">{feedback.level}</div>
-
-      <h3>What Zenova noticed</h3>
-      <p>{feedback.reason}</p>
-
-      <h3>Suggested next step</h3>
-      <p>{feedback.action}</p>
-
-      <h3>Why this suggestion?</h3>
-      <p>{feedback.why}</p>
-    </div>
-  );
-}
-function Physical({ weekly, load }) {
-  const [data, setData] = useState(weekly?.today?.physical || {});
-
-  useEffect(() => setData(weekly?.today?.physical || {}), [weekly]);
-
-  const save = (newData) => {
-    const updated = { ...data, ...newData };
-    setData(updated);
-    request('/physical', { method: 'POST', body: JSON.stringify(updated) }).then(load);
-  };
-
-  return (
-    <Grid
-      title="Physical Health"
-      icon={<Activity />}
-      insight="You logged good sleep across the week. On those days, stress check-ins were lower."
-    >
-      <Choice title="How did you sleep last night?" opts={[1, 2, 3, 4, 5]} val={data.sleepScore} save={(v) => save({ sleepScore: v })} />
-      <Cups val={data.hydration || 0} save={(v) => save({ hydration: v })} />
-      <Choice title="Did your body move today?" opts={['Yes', 'A little', 'No']} val={data.movement} save={(v) => save({ movement: v })} />
-      <Choice title="How does your body feel right now?" opts={['Light', 'Normal', 'Heavy', 'Drained']} val={data.bodyEnergy} save={(v) => save({ bodyEnergy: v })} />
-    </Grid>
-  );
-}
-
-function Mental({ weekly, load }) {
-  const [data, setData] = useState(weekly?.today?.mental || {});
-
-  useEffect(() => setData(weekly?.today?.mental || {}), [weekly]);
-
-  const save = (newData) => {
-    const updated = { ...data, ...newData };
-    setData(updated);
-    request('/mental', { method: 'POST', body: JSON.stringify(updated) }).then(load);
-  };
-
-  return (
-    <Grid title="Mental Health" insight="Your cognitive load patterns are tracked separately from emotional stress.">
-      <div className="card">
-        <h3>How sharp did your mind feel today?</h3>
-        <input type="range" min="1" max="5" value={data.focus || 3} onChange={(e) => save({ focus: +e.target.value })} />
-        <b>{data.focus || 3}</b>
-      </div>
-
-      <Choice title="How loaded is your mind with tasks?" opts={['Calm', 'Manageable', 'Overloaded']} val={data.cognitiveLoad} save={(v) => save({ cognitiveLoad: v })} />
-      <Choice title="How did screen time feel today?" opts={['Fine', 'Heavy', 'Draining']} val={data.digitalFatigue} save={(v) => save({ digitalFatigue: v })} />
-
-      <div className="card">
-        <h3>Release it — naming a worry reduces its intensity.</h3>
-        <input
-          maxLength="150"
-          placeholder="Name one thing weighing on you (optional)."
-          value={data.worryText || ''}
-          onChange={(e) => save({ worryText: e.target.value })}
-        />
-      </div>
-    </Grid>
-  );
-}
-
-function Emotional({ weekly, load, setResult }) {
-  const [data, setData] = useState(weekly?.today?.emotional || {});
-
-  useEffect(() => setData(weekly?.today?.emotional || {}), [weekly]);
-
-  const save = (newData) => {
-    const updated = { ...data, ...newData };
-    setData(updated);
-    request('/emotional', { method: 'POST', body: JSON.stringify(updated) }).then(load);
-  };
-
-  const check = async (mood) => {
-    const json = await request('/checkin', {
-      method: 'POST',
-      body: JSON.stringify({ mood }),
-    });
-
-    setResult({ ...json, mood });
-    load();
-  };
-
-  return (
-    <Grid title="Emotional Health" insight="Days with social connection usually show stronger emotional scores.">
-      <Choice title="Mood Check-In" opts={['Good', 'Neutral', 'Stressed']} val={data.mood} save={check} />
-      <Choice title="Did you have a meaningful interaction today?" opts={['Yes', 'Brief', 'Not today']} val={data.socialConnection} save={(v) => save({ socialConnection: v })} />
-
-      <div className="card">
-        <h3>Did something good happen today?</h3>
-        <button className={data.gratitude ? 'primary' : 'ghost'} onClick={() => save({ gratitude: true })}>
-          {data.gratitude ? 'Marked ✓' : 'Mark today ✓'}
-        </button>
-      </div>
-
-      <Choice title="What is your emotional energy right now?" opts={['Excited', 'Calm', 'Flat', 'Drained']} val={data.energyEmotion} save={(v) => save({ energyEmotion: v })} />
-    </Grid>
-  );
-}
-
-function Grid({ title, children, insight }) {
-  return (
-    <section>
-      <h1>{title}</h1>
-      <div className="grid">{children}</div>
-
-      <div className="card insight">
-        <b>Pattern insight</b>
-        <p>{insight}</p>
-      </div>
-    </section>
-  );
-}
-
-function Choice({ title, opts, val, save }) {
-  return (
-    <div className="card">
-      <h3>{title}</h3>
-
-      <div className="choices">
-        {opts.map((option) => (
-          <button key={option} className={val === option ? 'selected' : ''} onClick={() => save(option)}>
-            {option}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Cups({ val, save }) {
-  return (
-    <div className="card">
-      <h3>Hydration Tracker</h3>
-
-      <div className="cups">
-        {Array.from({ length: 8 }, (_, index) => (
-          <button key={index} className={index < val ? 'filled' : ''} onClick={() => save(val === index + 1 ? index : index + 1)}>
-            <Droplets size={18} />
-          </button>
-        ))}
-      </div>
-
-      <p>{val}/8 cups</p>
-    </div>
-  );
-}
-
-function Profile() {
-  const [profile, setProfile] = useState(null);
-  const [hist, setHist] = useState([]);
-  const [weekly, setWeekly] = useState(null);
-  const [err, setErr] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadProfile() {
-      try {
-        const profileRes = await request('/user/profile');
-        const historyRes = await request('/checkin/history');
-        const weeklyRes = await request('/insights/weekly');
-
-        if (!mounted) return;
-
-        setProfile(profileRes.user);
-        setHist(historyRes.history || []);
-        setWeekly(weeklyRes);
-      } catch (e) {
-        if (mounted) setErr(e.message || 'Could not load profile.');
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    }
-
-    loadProfile();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  if (loading) {
-    return (
-      <>
-        <AppNav />
-        <main className="dash">
-          <div className="card">
-            <p>Loading profile...</p>
-          </div>
-        </main>
-      </>
-    );
+  if (activeModule) {
+    return <ModuleView moduleId={activeModule} back={() => setActiveModule(null)} />;
   }
-
-  if (err) {
-    return (
-      <>
-        <AppNav />
-        <main className="dash">
-          <div className="banner">{err}</div>
-        </main>
-      </>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <>
-        <AppNav />
-        <main className="dash">
-          <div className="card">
-            <p>No profile found. Please log in again.</p>
-          </div>
-        </main>
-      </>
-    );
-  }
-
-  const init = (profile.name || 'Zenova User')
-    .split(' ')
-    .map((x) => x[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-
-  return (
-    <>
-      <AppNav />
-
-      <main className="dash profile">
-        <div className="card center">
-          <div className="bigavatar">{init}</div>
-          <h1>{profile.name}</h1>
-          <p>{profile.email}</p>
-        </div>
-
-        <div className="grid four">
-          {[
-            ['Age Group', profile.ageGroup],
-            ['Occupation', profile.occupation],
-            ['Member Since', profile.createdAt ? new Date(profile.createdAt).toDateString() : '—'],
-            ['Total Check-Ins', profile.totalCheckins || 0],
-          ].map((item) => (
-            <div className="card" key={item[0]}>
-              <b>{item[0]}</b>
-              <p>{item[1] || '—'}</p>
-            </div>
-          ))}
-        </div>
-
-        <section className="card">
-          <h2>Check-in history</h2>
-
-          {hist.length ? (
-            hist.map((item) => (
-              <div className={'history ' + item.mood} key={item.id}>
-                <span>{moodEm[item.mood]}</span>
-                <b>{item.mood}</b>
-                <small>
-                  {item.createdAt
-                    ? new Date(item.createdAt).toLocaleDateString(undefined, {
-                        weekday: 'short',
-                        month: 'short',
-                        day: 'numeric',
-                      })
-                    : item.date}
-                </small>
-              </div>
-            ))
-          ) : (
-            <p>No check-ins yet. Start from the dashboard!</p>
-          )}
-        </section>
-
-        <Weekly weekly={weekly} />
-      </main>
-    </>
-  );
-}
-function Coach() {
-  const [input, setInput] = useState("");
-  const [response, setResponse] = useState("");
-
-  const generateAdvice = async () => {
-  try {
-    const data = await request('/insights/weekly'); // backend data
-
-    const text = input.toLowerCase();
-    let advice = "";
-
-    // 🔹 combine USER DATA + INPUT
-
-    if (data?.summary?.includes("low sleep") || text.includes("sleep")) {
-      advice += "Your recent sleep pattern looks disturbed. ";
-      advice += "Try fixed sleep timing + reduce screen use before bed.\n\n";
-    }
-
-    if (data?.summary?.includes("stress") || text.includes("stress")) {
-      advice += "Your stress levels seem elevated. ";
-      advice += "Break tasks into smaller steps and try 4-6 breathing.\n\n";
-    }
-
-    if (data?.summary?.includes("low activity")) {
-      advice += "Low physical activity detected. ";
-      advice += "Even a 10-minute walk can improve energy.\n\n";
-    }
-
-    if (!advice) {
-      advice = "You're doing okay overall. Try maintaining consistency and small daily improvements.";
-    }
-
-    setResponse(advice);
-
-  } catch (err) {
-    setResponse("Unable to fetch insights. Try again.");
-  }
-};
 
   return (
     <>
       <AppNav />
       <main className="dash">
-        <div className="card">
-          <h2>Smart Coach</h2>
-          <p>Tell me what you're struggling with</p>
+        <section className="greet card" style={{ padding: '2.5rem', marginBottom: '2rem' }}>
+          <div>
+            <h1>{greeting}, {(user.name || 'there').split(' ')[0]}.</h1>
+            <p style={{ fontSize: '1.1rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+              Today's Focus: Take one small action for your wellbeing.
+            </p>
+          </div>
+        </section>
 
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="e.g. I'm stressed about deadlines and not sleeping well"
-            style={{ width: "100%", padding: "12px", borderRadius: "10px" }}
-          />
-
-          <button className="btn primary" onClick={generateAdvice}>
-            Get Guidance
-          </button>
-
-          {response && (
-            <div className="banner" style={{ marginTop: "12px" }}>
-              {response}
+        <div className="grid" style={{ gridTemplateColumns: '1fr', maxWidth: '800px', margin: '0 auto' }}>
+          {cards.map((c) => (
+            <div 
+              key={c.id} 
+              className="card" 
+              style={{ 
+                cursor: 'pointer', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '1.25rem', 
+                borderLeft: `6px solid ${c.color}`,
+                padding: '1.5rem',
+                transition: 'transform 0.2s, box-shadow 0.2s'
+              }}
+              onClick={() => setActiveModule(c.id)}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.06)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+            >
+              <div style={{ padding: '1rem', background: `${c.color}22`, borderRadius: '14px', color: c.color, display: 'flex' }}>
+                {c.icon}
+              </div>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--forest)' }}>{c.title}</h3>
             </div>
-          )}
+          ))}
         </div>
       </main>
     </>
   );
 }
 
-function calcScore(w) {
-  const scores = moduleScores(w);
-  const values = Object.values(scores).filter((v) => typeof v === 'number' && !Number.isNaN(v));
-
-  if (!values.length) {
-    return {
-      physical: 0,
-      mental: 0,
-      emotional: 0,
-      total: 0,
-    };
-  }
-
-  const t = w?.today || {};
-  const p = t.physical || {};
-  const m = t.mental || {};
-  const e = t.emotional || {};
-  const c = t.checkin || {};
-
-  const physicalParts = [scores.sleep, scores.energy, scores.hydration].filter(Boolean);
-  const mentalParts = [scores.journal, scores.mindfulness, scores.stress].filter(Boolean);
-  const emotionalParts = [scores.emotional].filter(Boolean);
-
-  return {
-    physical: Math.round(physicalParts.length ? avg(physicalParts) : 0),
-    mental: Math.round(mentalParts.length ? avg(mentalParts) : 0),
-    emotional: Math.round(emotionalParts.length ? avg(emotionalParts) : 0),
-    total: Math.round(avg(values)),
-  };
+function ModuleView({ moduleId, back }) {
+  // Placeholder for future feature specifications
+  return (
+    <>
+      <AppNav />
+      <main className="dash">
+        <button className="ghost" onClick={back} style={{ marginBottom: '1rem' }}>← Back to Focus</button>
+        <div className="card center" style={{ padding: '6rem 2rem', maxWidth: '800px', margin: '0 auto' }}>
+          <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{moduleId.toUpperCase()} Module</h2>
+          <p style={{ color: 'var(--muted)', fontSize: '1.1rem' }}>
+            Awaiting feature specification for this action-based module.
+          </p>
+        </div>
+      </main>
+    </>
+  );
 }
-const avg = (arr) => arr.reduce((x, y) => x + y, 0) / arr.length;
 
 createRoot(document.getElementById('root')).render(<App />);

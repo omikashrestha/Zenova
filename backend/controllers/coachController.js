@@ -19,3 +19,5 @@ const saveKey = (key) => (req, res) => {
 export const savePhysical = saveKey("physical");
 export const saveMental = saveKey("mental");
 export const saveEmotional = saveKey("emotional");
+export const saveSleep = saveKey("sleep");
+export const saveCalm = saveKey("calm");

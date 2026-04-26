@@ -39,6 +39,26 @@
       "createdAt": "2026-04-24T13:29:28.710Z",
       "ageGroup": "18–25",
       "occupation": "Student"
+    },
+    {
+      "id": "f480bc52-3c22-42a0-a49a-52365b13706f",
+      "name": "hello",
+      "email": "hello@gmail.com",
+      "password": "$2a$10$yR4WFlAViAC/mInukFE8Uufpdq0mtctXvdKrfj7h07EXgYM2ZBaLW",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-26T17:02:10.308Z",
+      "ageGroup": "46–60",
+      "occupation": "Retired"
+    },
+    {
+      "id": "92ff4bd9-1f6c-48ef-9b27-6d3ded16bf2b",
+      "name": "Test User",
+      "email": "testuser1@example.com",
+      "password": "$2a$10$b315fm2OJdt0Q0PIVa5EE.tll.uKqHwwjJfICmNSsxCwKhzXjoXuq",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-26T17:29:04.974Z",
+      "ageGroup": "26–35",
+      "occupation": "Working Professional"
     }
   ],
   "checkins": [
@@ -102,6 +122,35 @@
       "hydration": 7,
       "movement": "Yes",
       "bodyEnergy": "Light"
+    },
+    {
+      "id": "9d2e1a6b-f330-4627-a2b1-bfe37119cbc9",
+      "userId": "92ff4bd9-1f6c-48ef-9b27-6d3ded16bf2b",
+      "date": "2026-04-26",
+      "height": 180,
+      "weight": 75,
+      "activityLevel": "Moderate",
+      "timeAvailable": "10–20 minutes",
+      "createdAt": "2026-04-26T17:35:06.441Z",
+      "updatedAt": "2026-04-26T17:41:13.682Z",
+      "weatherCondition": "Normal",
+      "hydrationCount": 6,
+      "lastDrinkTime": "2026-04-26T17:41:04.246Z",
+      "completedActions": [
+        "Jumping Jacks",
+        "Squats",
+        "Push-ups",
+        "Plank",
+        "Mountain Climbers",
+        "Take stairs instead of lifts"
+      ],
+      "modeOverride": "activities",
+      "completedHydrationTips": [
+        "morning_water",
+        "bottle_sight",
+        "habit_pair",
+        "flavor"
+      ]
     }
   ],
   "mental": [
@@ -170,6 +219,83 @@
       "mood": "Stressed",
       "createdAt": "2026-04-24T13:33:45.555Z",
       "updatedAt": "2026-04-24T13:34:24.183Z"
+    }
+  ],
+  "sleep": [
+    {
+      "id": "62997d3c-089a-4633-a72d-005faef34090",
+      "userId": "92ff4bd9-1f6c-48ef-9b27-6d3ded16bf2b",
+      "date": "2026-04-26",
+      "sleepTime": "14:20",
+      "wakeTime": "06:00",
+      "difficultyAsleep": "No",
+      "createdAt": "2026-04-26T17:36:36.140Z",
+      "updatedAt": "2026-04-26T17:42:25.466Z",
+      "routine": {
+        "morning": "Wake up",
+        "midday": "Lunch",
+        "afternoon": "Work/Study",
+        "evening": "Screen Time",
+        "night": "Wind-down (Adjusted)",
+        "late": "Sleep"
+      }
+    }
+  ],
+  "calm": [
+    {
+      "id": "4f6f98af-aed5-42d2-8268-c002e996f780",
+      "userId": "92ff4bd9-1f6c-48ef-9b27-6d3ded16bf2b",
+      "date": "2026-04-26",
+      "sessions": [
+        {
+          "date": "2026-04-26T17:34:24.454Z",
+          "reflection": "Better"
+        }
+      ],
+      "createdAt": "2026-04-26T17:34:24.461Z",
+      "updatedAt": "2026-04-26T17:34:24.461Z"
+    }
+  ],
+  "emotions": [
+    {
+      "id": "f512263d-8ebb-4fac-9384-8089d2acaade",
+      "userId": "92ff4bd9-1f6c-48ef-9b27-6d3ded16bf2b",
+      "emotion": "happy",
+      "cause": "Relationships",
+      "date": "2026-04-26",
+      "time": "2026-04-26T17:30:14.140Z",
+      "createdAt": "2026-04-26T17:30:14.146Z"
+    },
+    {
+      "id": "2f1f6b89-bccc-4cf2-96d3-7742ba1258fc",
+      "userId": "92ff4bd9-1f6c-48ef-9b27-6d3ded16bf2b",
+      "emotion": "happy",
+      "cause": "Relationships",
+      "date": "2026-04-26",
+      "time": "2026-04-26T17:38:01.289Z",
+      "createdAt": "2026-04-26T17:38:01.295Z"
+    }
+  ],
+  "journals": [
+    {
+      "id": "a6307c8f-bf6f-4638-a68d-8beaef824d74",
+      "userId": "92ff4bd9-1f6c-48ef-9b27-6d3ded16bf2b",
+      "content": "This is a final test to ensure persistence.",
+      "emotionTag": "",
+      "triggerTag": "",
+      "date": "2026-04-26",
+      "time": "2026-04-26T17:39:03.344Z",
+      "createdAt": "2026-04-26T17:39:03.349Z"
+    },
+    {
+      "id": "67e50568-72f1-4b6d-9fd1-3613d5443cdb",
+      "userId": "92ff4bd9-1f6c-48ef-9b27-6d3ded16bf2b",
+      "content": "today i felt neutral. i spent my day modifying the features of this web app",
+      "emotionTag": "neutral",
+      "triggerTag": "Academics / Studies",
+      "date": "2026-04-26",
+      "time": "2026-04-26T17:40:03.447Z",
+      "createdAt": "2026-04-26T17:40:03.451Z"
     }
   ]
 }
