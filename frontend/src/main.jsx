@@ -14,7 +14,7 @@ import imgEmotional from './assets/img-emotional.jpg';
 import imgMindful from './assets/img-mindful.jpg';
 
 import { apiRequest as request } from "./api";
-const API = 'http://localhost:5003/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5003/api';
 
 const colors = {
   ivory: '#F7F5F0',
