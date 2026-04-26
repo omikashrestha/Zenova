@@ -8,6 +8,7 @@ import HydrationModule from './modules/HydrationModule';
 import SleepModule from './modules/SleepModule';
 import CalmModule from './modules/CalmModule';
 import MindModule from './modules/MindModule';
+import ProfileModule from './modules/ProfileModule';
 import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts';
 import './styles.css';
 import imgMovement from './assets/img-movement.jpg';
@@ -134,7 +135,7 @@ function PublicNav({ openAuth }) {
   );
 }
 
-function Avatar() {
+function Avatar({ onProfileClick }) {
   const nav = useNavigate();
   const [user] = useState(safeUser());
   const [open, setOpen] = useState(false);
@@ -154,6 +155,9 @@ function Avatar() {
 
       {open && (
         <div className="drop">
+          <button onClick={() => { onProfileClick(); setOpen(false); }}>
+            <User size={15} /> View Profile
+          </button>
           <button
             onClick={() => {
                 localStorage.clear();
@@ -169,14 +173,14 @@ function Avatar() {
   );
 }
 
-function AppNav() {
+function AppNav({ onProfileClick }) {
   return (
     <nav className="nav">
       <Logo />
       <div>
         <a href="/dashboard">Home</a>
       </div>
-      <Avatar />
+      <Avatar onProfileClick={onProfileClick} />
     </nav>
   );
 }
@@ -601,13 +605,19 @@ function Home() {
     return <MindModule back={() => setActiveModule(null)} onNavigate={(id) => setActiveModule(id)} />;
   }
 
+  if (activeModule === 'profile') {
+    return <ProfileModule back={() => setActiveModule(null)} />;
+  }
+
+
   if (activeModule) {
     return <ModuleView moduleId={activeModule} back={() => setActiveModule(null)} />;
   }
 
   return (
     <>
-      <AppNav />
+      <AppNav onProfileClick={() => setActiveModule('profile')} />
+
       <main className="dash">
         <section className="greet card" style={{ padding: '2.5rem', marginBottom: '2rem' }}>
           <div>
