@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiRequest as request } from '../api';
 import { ChevronLeft, Wind, Eye, Hand, Flower2, Cherry, CheckCircle2, PlayCircle, RotateCcw, Leaf, Sparkles, Zap, HeartHandshake, Timer, Smile, Meh, Frown } from 'lucide-react';
+import PageWrapper from '../PageWrapper';
 
 const EarIcon = ({ size = 20, stroke = "#6B9E78" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -32,28 +33,30 @@ export default function CalmModule({ back }) {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '4rem' }}>
-      {step > 0 && step < 6 && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <button className="ghost" onClick={back}><ChevronLeft size={16}/> Exit Practice</button>
-          <div style={{ fontWeight: 'bold', color: 'var(--muted)', fontSize: '0.9rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-            Step {step} of 5
+    <PageWrapper>
+      <div style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '4rem', paddingTop: '2rem' }}>
+        {step > 0 && step < 6 && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <button className="ghost" onClick={back}><ChevronLeft size={16}/> Exit Practice</button>
+            <div style={{ fontWeight: 'bold', color: 'var(--muted)', fontSize: '0.9rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              Step {step} of 5
+            </div>
           </div>
-        </div>
-      )}
-      
-      <AnimatePresence mode="wait">
-        <motion.div 
-          key={step}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.4 }}
-        >
-          {renderStep()}
-        </motion.div>
-      </AnimatePresence>
-    </div>
+        )}
+        
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={step}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4 }}
+          >
+            {renderStep()}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </PageWrapper>
   );
 }
 

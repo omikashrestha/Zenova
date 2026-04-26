@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { apiRequest as request } from '../api';
 import { Moon, AlarmClock, Clock, AlertCircle, ShieldCheck, BatteryLow, CalendarClock, Lamp, PhoneOff, Coffee, Sunrise, BedDouble, Sparkles, AudioWaveform, CloudRain, Music, Wind, ScanLine, Brain, Play, Pause, CalendarDays, LayoutList, Download, CheckCircle2, Timer, ChevronLeft, Volume2, Settings } from 'lucide-react';
-
+import PageWrapper from '../PageWrapper';
 const AUDIO_TRACKS = [
   { id: 'white_noise', title: 'White Noise', url: '/audio/white-noise.mp3', icon: <AudioWaveform size={32} color="#AACFE0" /> },
   { id: 'rain', title: 'Rain Sounds', url: '/audio/rain.mp3', icon: <CloudRain size={32} color="#AACFE0" /> },
@@ -73,13 +73,21 @@ export default function SleepModule({ back }) {
     await request('/coach/sleep', { method: 'POST', body: JSON.stringify(updated) });
   };
 
-  if (loading) return <div className="card center" style={{marginTop:'2rem'}}><p>Loading Sleep Data...</p></div>;
+  if (loading) return (
+    <PageWrapper>
+      <div className="card center" style={{marginTop:'2rem'}}><p>Loading Sleep Data...</p></div>
+    </PageWrapper>
+  );
 
-  if (!data.sleepTime || !data.wakeTime || !data.difficultyAsleep) {
-    return <SetupScreen data={data} save={save} />;
-  }
-
-  return <SleepDashboard data={data} save={save} back={back} />;
+  return (
+    <PageWrapper>
+      {(!data.sleepTime || !data.wakeTime || !data.difficultyAsleep) ? (
+        <SetupScreen data={data} save={save} />
+      ) : (
+        <SleepDashboard data={data} save={save} back={back} />
+      )}
+    </PageWrapper>
+  );
 }
 
 function SetupScreen({ data, save }) {

@@ -9,6 +9,7 @@ import SleepModule from './modules/SleepModule';
 import CalmModule from './modules/CalmModule';
 import MindModule from './modules/MindModule';
 import ProfileModule from './modules/ProfileModule';
+import PageWrapper from './PageWrapper';
 import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts';
 import './styles.css';
 import imgMovement from './assets/img-movement.jpg';
@@ -419,9 +420,9 @@ function Landing(){
           </motion.div>
           <div className='how-steps'>
             {[
-              { n: '01', title: 'Check in in 30 seconds', desc: 'One tap on how you feel. No long forms. No judgment. Just honesty.' },
-              { n: '02', title: 'See your wellness weather', desc: 'Your mood becomes a weather metaphor — sunny, cloudy, or stormy.' },
-              { n: '03', title: 'Get your personalised tip', desc: 'A calm, rule-based suggestion tailored to exactly where you are today.' },
+              { n: '01', title: 'Choose your focus', desc: 'Pick what you want to improve today — movement, hydration, sleep, calm, or emotions.' },
+              { n: '02', title: 'Take guided action', desc: 'Follow simple, personalized steps designed for your lifestyle and time.' },
+              { n: '03', title: 'Build better habits', desc: 'Complete actions, stay consistent, and improve your wellness over time.' },
             ].map((s, i) => (
               <motion.div key={s.n} className='card' style={{ background: 'white', padding: '2.5rem', borderRadius: 28 }}
                 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }}>
@@ -656,7 +657,7 @@ function Home() {
   }
 
   return (
-    <div style={{ background: 'linear-gradient(145deg, #F0F7F1 0%, #F7F5F0 50%, #EEE9F5 100%)', minHeight: '100vh' }}>
+    <PageWrapper>
       <AppNav onProfileClick={() => setActiveModule('profile')} />
 
       <main className="dash" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
@@ -776,7 +777,7 @@ function Home() {
           }
         }
       `}</style>
-    </div>
+    </PageWrapper>
   );
 }
 

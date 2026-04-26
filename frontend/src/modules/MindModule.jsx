@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest as request } from '../api';
 import { ChevronLeft, Smile, Frown, Angry, Meh, BookOpen, PenLine, Wind, Moon, Trash2, Pencil, X, Brain, Sparkles, GraduationCap, Briefcase, Users, Heart, HelpCircle, Lightbulb, Plus, CheckCircle2, CalendarDays, Clock, Tag, ChevronRight, ArrowRight } from 'lucide-react';
+import PageWrapper from '../PageWrapper';
 
 const AnxiousIcon = ({ size = 20, stroke = "#9B8FCA" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -84,7 +85,8 @@ function generateSimpleInsights(emotions) {
 export default function MindModule({ back, onNavigate }) {
   const [tab, setTab] = useState('checkin');
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <PageWrapper>
+      <div style={{ maxWidth: '800px', margin: '0 auto', paddingTop: '2rem' }}>
       <button className="ghost" onClick={back} style={{ marginBottom: '1rem' }}><ChevronLeft size={16}/> Back to Focus</button>
       <div style={{ display: 'flex', background: 'var(--ivory)', borderRadius: '999px', padding: '4px', marginBottom: '2rem' }}>
         <button className={tab === 'checkin' ? 'primary' : 'ghost'} onClick={() => setTab('checkin')} style={{ flex: 1, padding: '0.75rem', borderRadius: '999px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
@@ -95,7 +97,8 @@ export default function MindModule({ back, onNavigate }) {
         </button>
       </div>
       {tab === 'checkin' ? <CheckinFlow onNavigate={onNavigate} onSwitchToJournals={() => setTab('journals')} /> : <JournalsView />}
-    </div>
+      </div>
+    </PageWrapper>
   );
 }
 

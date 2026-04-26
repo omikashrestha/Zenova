@@ -74,6 +74,36 @@
         "sleepGoal": "8",
         "waterGoal": "8"
       }
+    },
+    {
+      "id": "fc44fff4-9018-4a58-afe3-9d2b8232cecc",
+      "name": "fdbdfb",
+      "email": "dfbadfb@gmail.com",
+      "password": "$2a$10$0g.eu5qloJpeAxM2sJTS9uUr0L3Orwsa7HQ6ckYBQRS3QvgPALg/m",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-26T21:15:27.428Z",
+      "ageGroup": "18–25",
+      "occupation": "Retired"
+    },
+    {
+      "id": "cd70eeb2-0263-4b48-a937-8215c591ab4c",
+      "name": "dbgdsg",
+      "email": "df@dbg.com",
+      "password": "$2a$10$.og6Qj4TfUjqahjk1s8ix.RhOMZkiuug0qgPABp3Otlv7vQb6Qx5i",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-26T21:53:18.778Z",
+      "ageGroup": "18–25",
+      "occupation": "Other"
+    },
+    {
+      "id": "af44e7fe-5145-44f0-aa4a-905669da2cc7",
+      "name": "fbdb",
+      "email": "bs@gmail.com",
+      "password": "$2a$10$bX8nO9GmqAt4N8YG.3eAS.NqkuSCzD7R3QHdfyZsI0P/WDQz6r.XG",
+      "onboardingComplete": true,
+      "createdAt": "2026-04-26T21:55:47.954Z",
+      "ageGroup": "26–35",
+      "occupation": "Retired"
     }
   ],
   "checkins": [
@@ -180,6 +210,17 @@
       "weatherCondition": "Hot",
       "hydrationCount": 1,
       "lastDrinkTime": "2026-04-26T20:12:29.323Z"
+    },
+    {
+      "id": "10e6408e-0bf9-4dd9-90e5-cd30af275dd0",
+      "userId": "fc44fff4-9018-4a58-afe3-9d2b8232cecc",
+      "date": "2026-04-26",
+      "height": 156,
+      "weight": 56,
+      "activityLevel": "Moderate",
+      "timeAvailable": "10–20 minutes",
+      "createdAt": "2026-04-26T21:15:54.067Z",
+      "updatedAt": "2026-04-26T21:15:54.067Z"
     }
   ],
   "mental": [
@@ -277,14 +318,21 @@
       "wakeTime": "07:00",
       "difficultyAsleep": "Yes",
       "createdAt": "2026-04-26T20:08:58.782Z",
-      "updatedAt": "2026-04-26T20:32:37.995Z",
+      "updatedAt": "2026-04-26T20:57:56.819Z",
       "routine": {
         "morning": "Exercise",
         "midday": "Lunch",
         "afternoon": "Work/Study",
         "evening": "Screen Time",
         "night": "Wind-down (Adjusted)",
-        "late": "Sleep"
+        "late": "Sleep",
+        "5–8 AM": "Wake up",
+        "9–11 AM": "Work/Study",
+        "12–2 PM": "Lunch",
+        "3–6 PM": "Errands",
+        "7–9 PM": "Dinner",
+        "10–12 AM": "Wind-down / Reading (Optimized)",
+        "12–5 AM": "Sleep"
       }
     }
   ],
@@ -343,6 +391,16 @@
       "date": "2026-04-26",
       "time": "2026-04-26T17:40:03.447Z",
       "createdAt": "2026-04-26T17:40:03.451Z"
+    },
+    {
+      "id": "bc3d1845-b1fb-4f97-a227-566050b880b6",
+      "userId": "cfee6af1-f896-4d86-9935-aa4c7f1c0016",
+      "content": "hii",
+      "emotionTag": "happy",
+      "triggerTag": "Work / Pressure",
+      "date": "2026-04-26",
+      "time": "2026-04-26T20:59:05.544Z",
+      "createdAt": "2026-04-26T20:59:05.555Z"
     }
   ]
 }

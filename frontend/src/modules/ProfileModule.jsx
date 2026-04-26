@@ -6,6 +6,7 @@ import {
   Zap, Moon, Settings
 } from 'lucide-react';
 import { apiRequest as request } from "../api";
+import PageWrapper from '../PageWrapper';
 
 export default function ProfileModule({ back }) {
   const [data, setData] = useState(null);
@@ -50,8 +51,16 @@ export default function ProfileModule({ back }) {
     }
   };
 
-  if (loading) return <div className="card center" style={{ padding: '4rem' }}>Loading Profile...</div>;
-  if (!data) return <div className="card center">Error loading profile.</div>;
+  if (loading) return (
+    <PageWrapper>
+      <div className="card center" style={{ padding: '4rem' }}>Loading Profile...</div>
+    </PageWrapper>
+  );
+  if (!data) return (
+    <PageWrapper>
+      <div className="card center">Error loading profile.</div>
+    </PageWrapper>
+  );
 
   const { user, counts, activities, insight, journalPreview, consistencyMsg } = data;
 
@@ -63,171 +72,173 @@ export default function ProfileModule({ back }) {
   };
 
   return (
-    <div className="dash" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
-        <button className="ghost" onClick={back}>← Back to Focus</button>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button className="ghost" onClick={() => {
-            localStorage.clear();
-            sessionStorage.clear();
-            window.location.replace('/');
-          }}>
-            <LogOut size={18} /> Log out
-          </button>
-        </div>
-      </header>
-
-      {/* 1. BASIC INFO */}
-      <section className="card" style={{ padding: '2rem', marginBottom: '2rem', display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center' }}>
-        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--sage)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 'bold' }}>
-          {user.name?.[0].toUpperCase()}
-        </div>
-        <div style={{ flex: 1 }}>
-          <h1 style={{ margin: '0 0 0.5rem', fontSize: '1.8rem', color: 'var(--forest)' }}>{user.name}</h1>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', color: 'var(--muted)' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Mail size={16} /> {user.email}</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Calendar size={16} /> {user.ageGroup}</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Briefcase size={16} /> {user.occupation}</span>
+    <PageWrapper>
+      <div className="dash" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+          <button className="ghost" onClick={back}>← Back to Focus</button>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <button className="ghost" onClick={() => {
+              localStorage.clear();
+              sessionStorage.clear();
+              window.location.replace('/');
+            }}>
+              <LogOut size={18} /> Log out
+            </button>
           </div>
-        </div>
-      </section>
+        </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-        
-        {/* LEFT COLUMN */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          
-          {/* 2. ACTIVITY SNAPSHOT */}
-          <section>
-            <h3 style={{ marginBottom: '1rem', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Activity size={20} color="var(--sage)" /> Activity Snapshot
-            </h3>
-            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '1rem' }}>
-              <StatCard icon={<Smile size={20} />} count={counts.checkins} label="Check-ins" color="var(--lav)" />
-              <StatCard icon={<BookOpen size={20} />} count={counts.journals} label="Journals" color="var(--sage)" />
-              <StatCard icon={<Wind size={20} />} count={counts.calm} label="Calm Sessions" color="var(--peach)" />
-              <StatCard icon={<Dumbbell size={20} />} count={counts.physical} label="Workouts" color="var(--sage)" />
-              <StatCard icon={<Droplets size={20} />} count={counts.water} label="Water Logs" color="var(--sky)" />
+        {/* 1. BASIC INFO */}
+        <section className="card" style={{ padding: '2rem', marginBottom: '2rem', display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center' }}>
+          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--sage)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 'bold' }}>
+            {user.name?.[0].toUpperCase()}
+          </div>
+          <div style={{ flex: 1 }}>
+            <h1 style={{ margin: '0 0 0.5rem', fontSize: '1.8rem', color: 'var(--forest)' }}>{user.name}</h1>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', color: 'var(--muted)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Mail size={16} /> {user.email}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Calendar size={16} /> {user.ageGroup}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Briefcase size={16} /> {user.occupation}</span>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* 6. CONSISTENCY SUMMARY */}
-          <section className="card" style={{ padding: '1.5rem', background: 'var(--dew)', border: 'none' }}>
-            <h4 style={{ margin: '0 0 0.5rem', color: 'var(--forest)' }}>Consistency Summary</h4>
-            <p style={{ margin: 0, color: 'var(--forest)', opacity: 0.8 }}>{consistencyMsg}</p>
-          </section>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          
+          {/* LEFT COLUMN */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            
+            {/* 2. ACTIVITY SNAPSHOT */}
+            <section>
+              <h3 style={{ marginBottom: '1rem', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Activity size={20} color="var(--sage)" /> Activity Snapshot
+              </h3>
+              <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '1rem' }}>
+                <StatCard icon={<Smile size={20} />} count={counts.checkins} label="Check-ins" color="var(--lav)" />
+                <StatCard icon={<BookOpen size={20} />} count={counts.journals} label="Journals" color="var(--sage)" />
+                <StatCard icon={<Wind size={20} />} count={counts.calm} label="Calm Sessions" color="var(--peach)" />
+                <StatCard icon={<Dumbbell size={20} />} count={counts.physical} label="Workouts" color="var(--sage)" />
+                <StatCard icon={<Droplets size={20} />} count={counts.water} label="Water Logs" color="var(--sky)" />
+              </div>
+            </section>
 
-          {/* 4. EMOTIONAL INSIGHT */}
-          <section className="card" style={{ padding: '1.5rem', borderLeft: '6px solid var(--lav)' }}>
-            <h4 style={{ margin: '0 0 0.5rem', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Zap size={18} color="var(--lav)" /> Emotional Insight
-            </h4>
-            <p style={{ margin: 0, color: 'var(--muted)', fontStyle: 'italic' }}>"{insight}"</p>
-          </section>
+            {/* 6. CONSISTENCY SUMMARY */}
+            <section className="card" style={{ padding: '1.5rem', background: 'var(--dew)', border: 'none' }}>
+              <h4 style={{ margin: '0 0 0.5rem', color: 'var(--forest)' }}>Consistency Summary</h4>
+              <p style={{ margin: 0, color: 'var(--forest)', opacity: 0.8 }}>{consistencyMsg}</p>
+            </section>
 
-          {/* 7. PREFERENCES */}
-          <section className="card" style={{ padding: '1.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h4 style={{ margin: 0, color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Settings size={18} color="var(--muted)" /> Wellness Preferences
+            {/* 4. EMOTIONAL INSIGHT */}
+            <section className="card" style={{ padding: '1.5rem', borderLeft: '6px solid var(--lav)' }}>
+              <h4 style={{ margin: '0 0 0.5rem', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Zap size={18} color="var(--lav)" /> Emotional Insight
               </h4>
-              {!editingPrefs ? (
-                <button className="ghost" onClick={() => setEditingPrefs(true)} style={{ padding: '0.25rem 0.5rem' }}>Edit</button>
-              ) : (
-                <button className="ghost" onClick={savePrefs} style={{ color: 'var(--sage)', fontWeight: 'bold' }}>
-                  <Save size={16} /> Save
-                </button>
-              )}
-            </div>
+              <p style={{ margin: 0, color: 'var(--muted)', fontStyle: 'italic' }}>"{insight}"</p>
+            </section>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <PrefItem 
-                label="Activity Level" 
-                value={prefs.activityLevel} 
-                editing={editingPrefs} 
-                icon={<Target size={16} />}
-                onChange={v => setPrefs({...prefs, activityLevel: v})}
-                options={['Sedentary', 'Light', 'Moderate', 'Active', 'Very Active']}
-              />
-              <PrefItem 
-                label="Daily Sleep Goal" 
-                value={prefs.sleepGoal} 
-                editing={editingPrefs} 
-                icon={<Moon size={16} />}
-                onChange={v => setPrefs({...prefs, sleepGoal: v})}
-                suffix="hours"
-              />
-              <PrefItem 
-                label="Hydration Goal" 
-                value={prefs.waterGoal} 
-                editing={editingPrefs} 
-                icon={<Droplets size={16} />}
-                onChange={v => setPrefs({...prefs, waterGoal: v})}
-                suffix="glasses"
-              />
-            </div>
-          </section>
+            {/* 7. PREFERENCES */}
+            <section className="card" style={{ padding: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h4 style={{ margin: 0, color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Settings size={18} color="var(--muted)" /> Wellness Preferences
+                </h4>
+                {!editingPrefs ? (
+                  <button className="ghost" onClick={() => setEditingPrefs(true)} style={{ padding: '0.25rem 0.5rem' }}>Edit</button>
+                ) : (
+                  <button className="ghost" onClick={savePrefs} style={{ color: 'var(--sage)', fontWeight: 'bold' }}>
+                    <Save size={16} /> Save
+                  </button>
+                )}
+              </div>
 
-        </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <PrefItem 
+                  label="Activity Level" 
+                  value={prefs.activityLevel} 
+                  editing={editingPrefs} 
+                  icon={<Target size={16} />}
+                  onChange={v => setPrefs({...prefs, activityLevel: v})}
+                  options={['Sedentary', 'Light', 'Moderate', 'Active', 'Very Active']}
+                />
+                <PrefItem 
+                  label="Daily Sleep Goal" 
+                  value={prefs.sleepGoal} 
+                  editing={editingPrefs} 
+                  icon={<Moon size={16} />}
+                  onChange={v => setPrefs({...prefs, sleepGoal: v})}
+                  suffix="hours"
+                />
+                <PrefItem 
+                  label="Hydration Goal" 
+                  value={prefs.waterGoal} 
+                  editing={editingPrefs} 
+                  icon={<Droplets size={16} />}
+                  onChange={v => setPrefs({...prefs, waterGoal: v})}
+                  suffix="glasses"
+                />
+              </div>
+            </section>
 
-        {/* RIGHT COLUMN */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          
-          {/* 3. RECENT ACTIVITY */}
-          <section>
-            <h3 style={{ marginBottom: '1rem', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Clock size={20} color="var(--muted)" /> Recent Actions
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {activities.length === 0 ? (
-                <p style={{ color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>No recent activity yet.</p>
-              ) : (
-                activities.map((act, i) => (
-                  <div key={i} className="card" style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', transition: 'none' }}>
-                    <div style={{ padding: '0.5rem', background: 'var(--ivory)', borderRadius: '10px' }}>
-                      {activityIcons[act.type] || <Activity size={18} />}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <b style={{ fontSize: '0.9rem' }}>{act.type}</b>
-                        <small style={{ color: 'var(--muted)' }}>{new Date(act.time).toLocaleDateString([], { month: 'short', day: 'numeric' })}</small>
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            
+            {/* 3. RECENT ACTIVITY */}
+            <section>
+              <h3 style={{ marginBottom: '1rem', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Clock size={20} color="var(--muted)" /> Recent Actions
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {activities.length === 0 ? (
+                  <p style={{ color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>No recent activity yet.</p>
+                ) : (
+                  activities.map((act, i) => (
+                    <div key={i} className="card" style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', transition: 'none' }}>
+                      <div style={{ padding: '0.5rem', background: 'var(--ivory)', borderRadius: '10px' }}>
+                        {activityIcons[act.type] || <Activity size={18} />}
                       </div>
-                      <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>{act.label}</p>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <b style={{ fontSize: '0.9rem' }}>{act.type}</b>
+                          <small style={{ color: 'var(--muted)' }}>{new Date(act.time).toLocaleDateString([], { month: 'short', day: 'numeric' })}</small>
+                        </div>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)' }}>{act.label}</p>
+                      </div>
                     </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </section>
+                  ))
+                )}
+              </div>
+            </section>
 
-          {/* 5. JOURNAL PREVIEW */}
-          <section>
-            <h3 style={{ marginBottom: '1rem', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <BookOpen size={20} color="var(--sage)" /> Last Journals
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {journalPreview.length === 0 ? (
-                <p style={{ color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>No journals written yet.</p>
-              ) : (
-                journalPreview.map((j, i) => (
-                  <div key={i} className="card" style={{ padding: '1.25rem', cursor: 'pointer', borderLeft: '4px solid var(--sage)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
-                      <b style={{ color: 'var(--forest)' }}>{j.title}</b>
-                      <ChevronRight size={16} color="var(--muted)" />
+            {/* 5. JOURNAL PREVIEW */}
+            <section>
+              <h3 style={{ marginBottom: '1rem', color: 'var(--forest)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <BookOpen size={20} color="var(--sage)" /> Last Journals
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {journalPreview.length === 0 ? (
+                  <p style={{ color: 'var(--muted)', textAlign: 'center', padding: '2rem' }}>No journals written yet.</p>
+                ) : (
+                  journalPreview.map((j, i) => (
+                    <div key={i} className="card" style={{ padding: '1.25rem', cursor: 'pointer', borderLeft: '4px solid var(--sage)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                        <b style={{ color: 'var(--forest)' }}>{j.title}</b>
+                        <ChevronRight size={16} color="var(--muted)" />
+                      </div>
+                      <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {j.content}
+                      </p>
                     </div>
-                    <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {j.content}
-                    </p>
-                  </div>
-                ))
-              )}
-            </div>
-          </section>
+                  ))
+                )}
+              </div>
+            </section>
+
+          </div>
 
         </div>
-
       </div>
-    </div>
+    </PageWrapper>
   );
 }
 
