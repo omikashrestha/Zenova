@@ -331,12 +331,12 @@ function Landing(){
   }, []);
 
   const features = [
-    { img: imgMovement, label: 'PHYSICAL', title: 'One tap. One question.', desc: "Check in daily in under 30 seconds. No forms, no friction. One mood tap and you're done.", name: 'Micro Check-In' },
-    { img: imgHydration, label: 'PHYSICAL', title: 'Track everything that matters.', desc: 'Sleep, water, movement, energy. All in one calm place, logged in seconds.', name: 'Holistic Tracking' },
-    { img: imgRest, label: 'OVERVIEW', title: 'See your week clearly.', desc: 'Patterns, trends, and gentle insights from your last 7 days — served every week.', name: 'Weekly Reflection' },
-    { img: imgMeditation, label: 'MENTAL', title: 'Your mind, measured softly.', desc: 'Focus rating, cognitive load, digital fatigue. Mental clarity starts with awareness.', name: 'Mental Health Tab' },
-    { img: imgCalm, label: 'EMOTIONAL', title: 'When stress builds, Zenova shifts.', desc: 'Three stressed check-ins triggers Recovery Mode — a calmer UI with one gentle task.', name: 'Recovery Mode' },
-    { img: imgEmotional, label: 'EMOTIONAL', title: 'Your inner weather, visualised.', desc: 'Sunny, cloudy, or stormy — your mood becomes a weather metaphor that just makes sense.', name: 'Wellness Weather' },
+    { img: imgMovement, label: 'PHYSICAL', title: 'One tap. One question.', desc: "Check in daily in under 30 seconds. No forms, no friction. One mood tap and you're done.", name: 'Move Your Body' },
+    { img: imgHydration, label: 'PHYSICAL', title: 'Track everything that matters.', desc: 'Sleep, water, movement, energy. All in one calm place, logged in seconds.', name: 'Smart Activity Planner' },
+    { img: imgRest, label: 'SLEEP', title: 'See your week clearly.', desc: 'Patterns, trends, and gentle insights from your last 7 days — served every week.', name: 'Rest & Recovery' },
+    { img: imgMeditation, label: 'CALM', title: 'Your mind, measured softly.', desc: 'Focus rating, cognitive load, digital fatigue. Mental clarity starts with awareness.', name: 'Calm & Reset Practice' },
+    { img: imgCalm, label: 'HYDRATION', title: 'When stress builds, Zenova shifts.', desc: 'Three stressed check-ins triggers Recovery Mode — a calmer UI with one gentle task.', name: 'Hydrate Your System' },
+    { img: imgEmotional, label: 'MIND', title: 'Your inner weather, visualised.', desc: 'Sunny, cloudy, or stormy — your mood becomes a weather metaphor that just makes sense.', name: 'Mind & Emotions' },
   ];
 
   const quotes = [
