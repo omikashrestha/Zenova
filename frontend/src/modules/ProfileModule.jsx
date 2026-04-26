@@ -69,6 +69,7 @@ export default function ProfileModule({ back }) {
         <div style={{ display: 'flex', gap: '1rem' }}>
           <button className="ghost" onClick={() => {
             localStorage.clear();
+            sessionStorage.clear();
             window.location.replace('/');
           }}>
             <LogOut size={18} /> Log out
