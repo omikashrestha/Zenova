@@ -5,7 +5,7 @@ The current release uses an action-module experience instead of a traditional da
 
 ## Live Deployment
 
-- Frontend (Vercel): your production Vercel URL
+- Frontend (Vercel): https://zenova-jx9qpjot-omikashresthas-projects.vercel.app
 - Backend (Render): https://zenova-backend.onrender.com
 
 ## Release
