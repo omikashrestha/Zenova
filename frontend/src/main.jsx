@@ -63,11 +63,16 @@ function Guard({ children }) {
 }
 
 function Logo() {
+  const nav = useNavigate();
+  const isLogged = !!localStorage.getItem('token');
+
   return (
     <img
       src="/zenova_logo.svg"
       alt="Zenova"
       className="logo"
+      style={{ cursor: 'pointer' }}
+      onClick={() => nav(isLogged ? '/dashboard' : '/')}
     />
   );
 }
@@ -578,11 +583,47 @@ function Home() {
   const greeting = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
 
   const cards = [
-    { id: 'physical', title: 'Physical Activity', icon: <Dumbbell size={28} color="#6B9E78" />, color: 'var(--sage)' },
-    { id: 'hydration', title: 'Hydration', icon: <Droplets size={28} color="#AACFE0" />, color: 'var(--sky)' },
-    { id: 'sleep', title: 'Sleep', icon: <Moon size={28} color="#9B8FCA" />, color: 'var(--lav)' },
-    { id: 'calm', title: 'Calm & Reset', icon: <Wind size={28} color="#6B9E78" />, color: 'var(--peach)' },
-    { id: 'mind', title: 'Mind & Emotions', icon: <Brain size={28} color="#9B8FCA" />, color: 'var(--dew)' },
+    { 
+      id: 'physical', 
+      title: 'Physical Activity', 
+      subtitle: 'Move your body today',
+      icon: <Dumbbell size={24} />, 
+      color: '#6B9E78', 
+      bg: '#E8F5EC' 
+    },
+    { 
+      id: 'hydration', 
+      title: 'Hydration', 
+      subtitle: 'Track your water intake',
+      icon: <Droplets size={24} />, 
+      color: '#AACFE0', 
+      bg: '#E0F0F8' 
+    },
+    { 
+      id: 'sleep', 
+      title: 'Sleep', 
+      subtitle: 'Rest and recover well',
+      icon: <Moon size={24} />, 
+      color: '#9B8FCA', 
+      bg: '#EDE9F8' 
+    },
+    { 
+      id: 'calm', 
+      title: 'Calm & Reset', 
+      subtitle: '5-min mindfulness practice',
+      icon: <Wind size={24} />, 
+      color: '#A8C5A0', 
+      bg: '#E8F5EC' 
+    },
+    { 
+      id: 'mind', 
+      title: 'Mind & Emotions', 
+      subtitle: 'Check in with yourself',
+      icon: <Brain size={24} />, 
+      color: '#C8C1E8', 
+      bg: '#EDE9F8',
+      full: true 
+    },
   ];
 
   if (activeModule === 'physical') {
@@ -615,46 +656,127 @@ function Home() {
   }
 
   return (
-    <>
+    <div style={{ background: 'linear-gradient(145deg, #F0F7F1 0%, #F7F5F0 50%, #EEE9F5 100%)', minHeight: '100vh' }}>
       <AppNav onProfileClick={() => setActiveModule('profile')} />
 
-      <main className="dash">
-        <section className="greet card" style={{ padding: '2.5rem', marginBottom: '2rem' }}>
-          <div>
-            <h1>{greeting}, {(user.name || 'there').split(' ')[0]}.</h1>
-            <p style={{ fontSize: '1.1rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
-              Today's Focus: Take one small action for your wellbeing.
-            </p>
+      <main className="dash" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+        {/* GREETING BANNER */}
+        <section style={{
+          background: 'linear-gradient(120deg, #2D4A35 0%, #4A7A5A 100%)',
+          borderRadius: '16px',
+          padding: '32px 40px',
+          marginBottom: '2.5rem',
+          position: 'relative',
+          overflow: 'hidden',
+          color: 'white',
+          boxShadow: '0 10px 30px rgba(45,74,53,0.15)'
+        }}>
+          {/* Decorative Circles */}
+          <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '120px', height: '120px', borderRadius: '50%', background: 'white', opacity: 0.06 }}></div>
+          <div style={{ position: 'absolute', bottom: '-30px', left: '10%', width: '180px', height: '180px', borderRadius: '50%', background: 'white', opacity: 0.04 }}></div>
+          
+          {/* Pill */}
+          <div style={{
+            position: 'absolute', top: '24px', right: '32px',
+            background: 'rgba(255,255,255,0.12)', borderRadius: '20px',
+            padding: '4px 14px', fontSize: '12px', color: 'rgba(255,255,255,0.85)',
+            display: 'flex', alignItems: 'center', gap: '4px',
+            fontFamily: "'DM Sans', sans-serif"
+          }}>
+            Day active ✦
           </div>
+
+          <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: '28px', color: '#ffffff', margin: '0 0 4px', fontWeight: 400 }}>
+            {greeting}, {user.name?.split(' ')[0]}.
+          </h1>
+          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '14px', color: 'rgba(255,255,255,0.7)', margin: 0 }}>
+            Today's Focus: Take one small action for your wellbeing.
+          </p>
         </section>
 
-        <div className="grid" style={{ gridTemplateColumns: '1fr', maxWidth: '800px', margin: '0 auto' }}>
+        {/* MODULE SECTION */}
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '11px', color: '#7A9B82', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700 }}>
+            YOUR WELLNESS MODULES
+          </span>
+        </div>
+
+        <div className="module-grid">
           {cards.map((c) => (
             <div 
               key={c.id} 
-              className="card" 
+              className="card module-card" 
               style={{ 
-                cursor: 'pointer', 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '1.25rem', 
-                borderLeft: `6px solid ${c.color}`,
-                padding: '1.5rem',
-                transition: 'transform 0.2s, box-shadow 0.2s'
+                background: '#ffffff',
+                border: '0.5px solid #D5E4D0',
+                borderRadius: '16px',
+                padding: '28px 24px',
+                minHeight: '160px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'flex-start',
+                cursor: 'pointer',
+                position: 'relative',
+                transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease',
+                gridColumn: c.full ? '1 / -1' : 'auto',
+                maxWidth: c.full ? '420px' : 'none',
+                margin: c.full ? '0 auto' : '0'
               }}
               onClick={() => setActiveModule(c.id)}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.06)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+              onMouseEnter={(e) => { 
+                e.currentTarget.style.transform = 'translateY(-4px)'; 
+                e.currentTarget.style.boxShadow = '0 12px 32px rgba(45,74,53,0.10)'; 
+              }}
+              onMouseLeave={(e) => { 
+                e.currentTarget.style.transform = 'translateY(0)'; 
+                e.currentTarget.style.boxShadow = 'none'; 
+              }}
             >
-              <div style={{ padding: '1rem', background: `${c.color}22`, borderRadius: '14px', color: c.color, display: 'flex' }}>
+              {/* Top accent strip */}
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: c.color, borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}></div>
+              
+              <div style={{ 
+                width: '48px', 
+                height: '48px', 
+                background: c.bg, 
+                borderRadius: '12px', 
+                color: c.color, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                marginBottom: '1.25rem'
+              }}>
                 {c.icon}
               </div>
-              <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--forest)' }}>{c.title}</h3>
+              
+              <h3 style={{ fontFamily: "'DM Serif Display', serif", margin: '0 0 4px', fontSize: '17px', color: '#2D4A35', fontWeight: 400 }}>{c.title}</h3>
+              <p style={{ fontFamily: "'DM Sans', sans-serif", margin: 0, fontSize: '13px', color: '#7A9B82' }}>{c.subtitle}</p>
+              
+              <div style={{ position: 'absolute', bottom: '24px', right: '24px' }}>
+                <ChevronRight size={16} color="#A8C5A0" />
+              </div>
             </div>
           ))}
         </div>
       </main>
-    </>
+
+      <style>{`
+        .module-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+        }
+        @media (max-width: 640px) {
+          .module-grid {
+            grid-template-columns: 1fr;
+          }
+          .module-card {
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
+    </div>
   );
 }
 
